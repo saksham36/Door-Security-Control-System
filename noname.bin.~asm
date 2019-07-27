@@ -1,0 +1,1606 @@
+#make_bin#
+
+#LOAD_SEGMENT=FFFFh#
+#LOAD_OFFSET=0000h#
+
+#CS=0000h#
+#IP=0000h#
+
+#DS=0000h#
+#ES=0000h#
+
+#SS=0000h#
+#SP=FFFEh#
+
+#AX=0000h#
+#BX=0000h#
+#CX=0000h#
+#DX=0000h#
+#SI=0000h#
+#DI=0000h#
+#BP=0000h#
+
+
+
+JMP     ST1
+DB     5 DUP(0)
+
+;IVT entry for NMI (INT 02h)
+DW     Nmi_24hrtimer
+DW     0000
+DB     500 DUP(0)
+
+;IVT entry for 80H
+DW     Switch_intR
+DW     0000
+DB     508 DUP(0)
+ST1:      CLI ;Clear IF, now initiliaze RAM
+
+;intialize ds, es,ss to start of RAM
+MOV       AX,0200h
+MOV       DS,AX
+MOV       ES,AX
+MOV       SS,AX
+MOV       SP,0FFFEH
+; INITIALIZATION OF 8255,8253 BEGINS HERE
+
+port_a1 EQU 00h
+port_b1 EQU 02h
+port_c1 EQU 04h
+creg1 EQU 06h
+
+port_a2 EQU 08H
+port_b2 EQU 0Ah
+port_c2 EQU 0Ch
+creg2 EQU 0Eh
+
+cnt0_1 EQU 10h
+cnt1_1 EQU 12h
+cnt2_1 EQU 14h
+creg3 EQU 16h
+
+cnt0_2 EQU 18h
+cnt1_2 EQU 1Ah
+cnt2_2 EQU 1Ch
+creg4 EQU 1Eh
+
+STI
+MOV AL,89h      ; control word for 8255-2 I/O Mode, Port A - Mode 0, o/p, PCU - i/p Port B - Mode 0, o/p, PCL - i/p
+OUT creg2,AL
+
+MOV AL,88h    ; control word for 8255-1 I/O Mode, Port A - Mode 0, o/p, PCU - i/p Port B - Mode 0, o/p, PCL - o/p
+OUT creg1,AL
+
+MOV AL,36h    ;control word for 8253-1 counter 0    16bit count, Mode 3, Bin
+OUT creg3,AL
+
+MOV AL,56h      ;control word for 8253-1 counter 1 8bit LSB count, Mode 3, Bin
+OUT creg3,AL
+
+MOV AL,92h      ;control word for 8253-1 counter 2, 8bit LSB count, Mode 1, Bin
+OUT creg3,AL
+
+MOV AL,34h      ;control word for 8253-2 counter 0 16bit count, Mode 2, Bin
+OUT creg4,AL
+
+MOV AL,5ah      ;control word for 8253-2 counter 1 8bit LSB count, Mode 5, Bin
+OUT creg4,AL
+
+MOV AL,94h      ;control word for 8253-2 counter 2 8bit LSB count Mode 2, Bin
+OUT creg4,AL
+
+MOV AL,50h    ;load count lsb for 8253-1 counter 0 | Count value = 50000(dec)
+OUT cnt0_1, AL
+
+MOV AL,0C3h     ;load count msb for 8253-1 counter 0
+OUT cnt0_1, AL
+
+MOV AL,64h    ;load count for 8253-1 counter 1 | Count value = 100(dec)
+OUT cnt1_1, AL
+
+MOV AL,1eh    ;load count lsb for 8253-1 counter 2 (1 minute Timer) | Count value = 30(dec)
+OUT cnt2_1, AL
+
+
+MOV AL,0C0h    ;load count for 8253-2  LSB counter 0 (24 hour counter) | Count value =43200(dec)
+OUT cnt0_2, AL
+
+MOV AL,0A8h    ;load count for 8253-2  MSB counter 0 (24 hour counter)
+OUT cnt0_2, AL
+
+MOV AL,3    ;load count for 8253-2 counter 1 (Switch trigger counter) | Count value = 3(dec)
+OUT cnt1_2, AL
+
+MOV AL,2    ;load count for 8253-2 counter 2 | Count value = 2(dec)
+OUT cnt2_2, AL
+;INITIALIZATION OF 8255,8253 ENDS HERE
+
+
+MOV AL,00h     ;default low output from 8255-2 upper port C
+OUT port_c2, AL
+
+CALL DELAY_20ms ;LCD INITIALIZATION BEGINS
+MOV AL,04h ;E=1 RW=0 RS=0 -> control write
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,00h ;E=0 RW=0 RS=0 -> control write H-L transition
+OUT port_b1,AL
+
+MOV AL,38h ;Initialization
+OUT port_a1,AL
+
+MOV AL,04h ;E=1 RW=0 RS=0 -> control write
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,00h ;E=0 RW=0 RS=0 -> control write H-L transition
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,0Ch ;LCD ON, cursor ON, curson blinking OFF
+OUT port_a1,AL
+MOV AL,04h ;E=1 RW=0 RS=0 -> control write
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,00h ;E=0 RW=0 RS=0 -> control write H-L transition
+OUT port_b1,AL
+
+MOV AL,06h ;move cursor right
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,04h ;E=1 RW=0 RS=0 -> control write
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,00h ;E=0 RW=0 RS=0 -> control write H-L transition
+OUT port_b1,AL
+MOV AL,4ch
+OUT port_a1,AL
+CALL DELAY_20ms  ;LCD INITIALIZATION ENDS
+
+MOV AX,0200h ; Initialize DS
+MOV DS,AX
+
+MOV SI,0000h
+MOV AL,0edh    ;hard coding pass-word ; 9999999999999999 (BD -> Keyboard value)
+MOV [SI],AL
+
+MOV AL,0ebh
+MOV [SI+1],AL
+
+MOV AL,0e7h
+MOV [SI+2],AL
+
+MOV AL,0deh
+MOV [SI+3],AL
+
+MOV AL,0ddh
+MOV [SI+4],AL
+
+MOV AL,0dbh
+MOV [SI+5],AL
+
+MOV AL,0d7h
+MOV [SI+6],AL
+
+MOV AL,0beh
+MOV [SI+7],AL
+
+MOV AL,0bdh
+MOV [SI+8],AL
+
+MOV AL,0edh
+MOV [SI+9],AL
+
+MOV AL,0ebh
+MOV [SI+0ah],AL
+
+MOV AL,0e7h
+MOV [SI+0bh],AL
+
+MOV AL,0deh
+MOV [SI+0ch],AL
+
+MOV AL,0ddh
+MOV [SI+0dh],AL
+
+MOV AL,0dbh
+MOV [SI+0eh],AL
+
+MOV AL,0d7h
+MOV [SI+0fh],AL
+
+ADD SI,000fh
+INC SI ; Update si to store future entry
+
+
+MOV AL,0bdh    ;hard coding alarm pass-word ; 99999999999999
+MOV [SI],AL
+
+MOV AL,0bdh
+MOV [SI+1],AL
+
+MOV AL,0bdh
+MOV [SI+2],AL
+
+MOV AL,0bdh
+MOV [SI+3],AL
+
+MOV AL,0bdh
+MOV [SI+4],AL
+
+MOV AL,0bdh
+MOV [SI+5],AL
+
+MOV AL,0bdh
+MOV [SI+6],AL
+
+MOV AL,0bdh
+MOV [SI+7],AL
+
+MOV AL,0bdh
+MOV [SI+8],AL
+
+MOV AL,0bdh
+MOV [SI+9],AL
+
+MOV AL,0bdh
+MOV [SI+0ah],AL
+
+MOV AL,0bdh
+MOV [SI+0bh],AL
+
+MOV AL,0bdh
+MOV [SI+0ch],AL
+
+MOV AL,0bdh
+MOV [SI+0dh],AL
+
+ADD SI,000dh
+INC SI ;Update si to store future values
+
+MOV AL,0ffh ; Switch off all LEDs
+OUT port_a2,AL
+
+start:    CALL clear_LCD
+CALL welcome_msg
+
+MOV BP,00h
+CALL keypad_input
+CMP AL,0bbh
+JZ master_Mode
+JMP start
+
+x6:     CALL clear_LCD
+CALL welcome_msg
+CALL keypad_input
+CMP AL,0b7h
+JZ User_Mode
+JMP x6 ;press valid key
+
+master_Mode:
+CALL intm
+MOV BP,0abcdh
+CMP AX,0abcdh
+JNZ x6
+x8:     CALL keypad_input
+CMP AL,7Dh
+JZ Alarm_Mode
+JNZ x8
+
+Alarm_Mode:
+CALL inta
+CMP DH,6h
+JZ start
+CMP DH,1h
+JZ x6
+JMP x70
+
+User_Mode:
+CALL intu
+CMP AX,0abcdh
+JZ x8
+JNZ x6
+
+x70:
+stop: JMP stop
+
+DELAY_20ms PROC
+
+MOV        CH,5
+X4:    NOP
+NOP
+DEC     CH
+JNZ     X4
+RET
+DELAY_20ms ENDP
+DELAY_0.04s PROC
+
+MOV    CX,4fffh
+X17:    NOP
+NOP
+DEC     CX
+JNZ     X17
+RET
+DELAY_0.04s ENDP
+DELAY_max PROC
+
+MOV    CX,0ffffh
+X16:    NOP
+NOP
+DEC     CX
+JNZ     X16
+RET
+DELAY_max ENDP
+
+enter_LCD PROC
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h ;E=1 RW=0 RS=1 -> data write
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h ;E=1 RW=0 RS=1 -> data write H-L transition
+OUT port_b1,AL  ;prints Space
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,50h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints P
+
+MOV AL,52h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints R
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+MOV AL,53h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints S
+
+MOV AL,53h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints S
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+MOV AL,4Eh
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints N
+
+MOV AL,54h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints T
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+MOV AL,52h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints R
+RET
+enter_LCD ENDP
+
+
+intm PROC
+
+CALL clear_LCD
+MOV AL,0feh
+OUT port_a2,AL          ;turns on enter password LED
+MOV CX,16
+
+enter_16bit:
+CALL keypad_input
+CMP AL,7eh ;  Check if pressed 'C'
+JZ pressc
+CMP AL,7bh ; Check if pressed 'AC'
+JZ pressac
+CMP AL,77h ; Check if pressed 'ENTER'
+JZ press_enter
+CMP AL,0bbh ;Check if pressed 'M'
+JZ nop_master
+CMP AL,0b7h ; Check if pressed 'U'
+JZ nop_master
+CMP AL,7dh ; Check if pressed 'A'
+JZ nop_master
+MOV [SI],AL
+CALL asterisk
+INC SI
+DEC CX
+JNZ enter_16bit
+disp_entermaster:
+CALL keypad_input
+CMP AL,7eh
+JZ pressc
+CMP AL,7bh
+JZ pressac
+CMP AL,77h
+JZ press_enter
+asd:    CALL clear_LCD
+CALL enter_LCD
+CALL keypad_input
+CMP AL,77h
+JZ press_enter
+JNZ asd
+
+nop_master:     NOP
+JMP enter_16bit
+pressc:      CALL clear_1digit_LCD
+DEC SI
+INC CX
+JMP enter_16bit
+pressac:
+CALL clear_LCD
+MOV CX,16
+MOV SI,1eh        ;start of pass segment
+JMP enter_16bit
+press_enter:
+CALL clear_LCD
+MOV AL,0ffh ; All LED off
+OUT port_a2,AL
+CMP CX,0
+JZ cmp_pass
+JMP raise_alarm
+
+
+day_pass:
+MOV SI,002Eh
+MOV AL,0fdh ; Retry/Update is on
+OUT port_a2,AL
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL clear_LCD
+MOV CX,12
+enter_12bit:
+CALL keypad_input
+CMP AL,7eh ;Check for 'C'
+JZ presscday
+CMP AL,0bbh ;Check for 'M'
+JZ nop_day
+CMP AL,0b7h ;Check for U
+JZ nop_day
+CMP AL,7dh ;Check for A
+JZ nop_day
+CMP AL,7bh ;Check for AC
+JZ pressacday
+CMP AL,77h ;Check for ENTER
+JZ press_enterday
+MOV [SI],AL
+CALL asterisk
+INC SI
+DEC CX
+JNZ enter_12bit
+disp_enter:
+CALL keypad_input
+CMP AL,7eh
+JZ presscday
+CMP AL,7bh
+JZ pressacday
+CMP AL,77h
+JZ press_enterday
+asd1:              CALL clear_LCD
+CALL enter_LCD
+CALL keypad_input
+CMP AL,77h ;Check for ENTER
+JZ press_enterday
+JNZ asd1
+nop_day:    NOP
+JMP enter_12bit
+
+presscday:
+CALL clear_1digit_LCD
+DEC SI
+INC CX
+JMP enter_12bit
+pressacday:
+CALL clear_LCD
+JMP day_pass
+press_enterday:
+CALL clear_LCD
+MOV AL,0ffh
+OUT port_a2,AL
+CMP CX,0
+JNZ err_msg
+MOV AL,0fbh
+OUT port_a2,AL
+
+CALL DELAY_max
+CALL DELAY_max
+
+
+MOV AL,0ffh
+OUT port_a2,AL
+JZ end_69h
+err_msg:
+CALL error_msg
+JMP day_pass
+cmp_pass:
+CLD
+MOV SI,0000h
+MOV DI,001Eh
+MOV CX,17
+x5:        MOV AL,[SI]
+MOV BL,[DI]
+DEC CX
+JZ day_pass
+CMP AL,BL
+JNZ raise_alarm
+INC SI
+INC DI
+JMP x5
+
+
+raise_alarm:
+MOV DH,5h
+MOV AL,0fh
+OUT port_a2,AL
+MOV AX,0abcdh
+end_69h:
+RET
+intm ENDP
+
+asterisk PROC
+MOV AL,2Ah
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints *
+RET
+asterisk ENDP
+
+clear_LCD PROC
+MOV AL,00h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h            ;Clear Display
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,04h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,00h
+OUT port_b1,AL
+RET
+clear_LCD ENDP
+
+keypad_input PROC             ;SubR for keypad entry,al has unique key input value.
+x0:        MOV AL,00h
+OUT port_c1,AL
+x1:        IN AL, port_c1
+AND AL,0f0h
+CMP AL,0f0h
+JNZ x1
+CALL DELAY_20ms
+
+MOV AL,00h                ; Check for key press
+OUT 04,AL
+x2:
+IN AL, port_c1
+AND AL,0F0h
+CMP AL,0F0h
+JZ x2
+CALL DELAY_20ms
+
+MOV AL,00h                ; Check for key press
+OUT 04,AL
+IN AL, port_c1
+AND AL,0F0h
+CMP AL,0F0h
+JZ x2
+
+MOV AL,0Eh                ;Check for key press column 1
+MOV BL,AL
+OUT port_c1,AL
+IN AL, port_c1
+AND AL,0f0h
+CMP AL,0f0h
+JNZ x3
+
+MOV AL,0Dh                ;Check for key press column 2
+MOV BL,AL
+OUT port_c1,AL
+IN AL, port_c1
+AND AL,0f0h
+CMP AL,0f0h
+JNZ x3
+
+MOV AL,0Bh                ;Check for key press column 3
+MOV BL,AL
+OUT port_c1,AL
+IN AL, port_c1
+AND AL,0f0h
+CMP AL,0f0h
+JNZ x3
+
+MOV AL,07h                ;Check for key press column 4
+MOV BL,AL
+OUT port_c1,AL
+IN AL,port_c1
+AND AL,0f0h
+CMP AL,0f0h
+JZ x2
+
+x3:        OR AL,BL
+RET
+keypad_input ENDP
+
+inta PROC
+MOV AL,00eh
+OUT port_a2,AL
+
+
+
+MOV CX,14
+MOV SI,3ah                    ;store the 16-bit entered pass after the hard coded pass word
+enter_14bit:
+CALL keypad_input
+CMP AL,7eh
+JZ pressc_alarm
+CMP AL,0bbh
+JZ nop_alarm
+CMP AL,0b7h
+JZ nop_alarm
+CMP AL,7dh
+JZ nop_alarm
+CMP AL,7bh
+JZ pressac_alarm
+CMP AL,77h
+JZ press_enter_alarm
+MOV [SI],AL
+CALL asterisk
+INC SI
+DEC CX
+JNZ enter_14bit
+disp_enteralarm:
+CALL keypad_input
+CMP AL,7eh
+JZ pressc_alarm
+CMP AL,7bh
+JZ pressac_alarm
+CMP AL,77h
+JZ press_enter_alarm
+asd2:        CALL clear_LCD
+CALL enter_LCD
+CALL keypad_input
+CMP AL,77h
+JZ press_enter_alarm
+JNZ asd2
+nop_alarm: NOP
+JMP enter_14bit
+pressc_alarm:
+CALL clear_1digit_LCD
+DEC SI
+INC CX
+JMP enter_14bit
+pressac_alarm:
+CALL clear_LCD
+MOV CX,14
+MOV SI,3ah                ;start of pass segment
+JMP enter_14bit
+press_enter_alarm:
+CALL clear_LCD
+MOV AL,0fh
+OUT port_a2,AL
+CMP CX,0
+JZ cmp_pass_alarm
+JNZ x56
+cmp_pass_alarm:
+CLD
+MOV SI,10h
+MOV DI,3ah
+MOV CX,14
+REPE CMPSB
+CMP CX,00h
+JNZ x56
+MOV AL,0ffh
+OUT port_a2,AL
+ADD DH,1h
+x56:
+RET
+inta ENDP
+
+
+
+intu PROC
+CALL clear_LCD
+MOV DL,1                 ;flag for checking two inputs
+MOV AL,0feh
+OUT port_a2,AL
+MOV CX,12
+MOV SI,48h                ;store the 12-bit entered pass after the hard coded pass word
+enter_12bitu:
+CALL keypad_input
+CMP AL,7eh
+JZ pressc_user
+CMP AL,7bh
+JZ pressac_user
+CMP AL,0bbh
+JZ nop_user
+CMP AL,0b7h
+JZ nop_user
+CMP AL,7dh
+JZ nop_user
+CMP AL,77h
+JZ press_enter_user
+MOV [SI],AL
+CALL asterisk
+INC SI
+DEC CX
+JNZ enter_12bitu
+disp_enter_user:
+CALL keypad_input
+CMP AL,7eh
+JZ pressc_user
+CMP AL,7bh
+JZ pressac_user
+CMP AL,77h
+JZ press_enter_user
+asd3:        CALL clear_LCD
+CALL enter_LCD
+CALL keypad_input
+CMP AL,77h
+JZ press_enter_user
+JNZ asd3
+nop_user:
+NOP
+JMP enter_12bitu
+pressc_user:
+CALL clear_1digit_LCD
+DEC SI
+INC CX
+JMP enter_12bitu
+pressac_user:
+CALL clear_LCD
+MOV CX,12
+MOV SI,48h                ;start of pass segment
+JMP enter_12bitu
+press_enter_user:
+MOV AL,0ffh
+OUT port_a2,AL
+CMP CX,0
+JZ cmp_pass_user
+JNZ wrong_pass
+
+cmp_pass_user:
+CLD
+MOV SI,2eh
+MOV DI,48h
+MOV CX,12
+REPE CMPSB
+CMP CX,00h
+JNZ wrong_pass
+JZ open_door_user
+
+wrong_pass :
+CALL clear_LCD
+MOV SI,48h
+MOV CX,12
+CMP DL,0
+JZ raise_alarm_user
+MOV AL,0fdh
+OUT port_a2,AL
+CALL retry_msg
+CALL DELAY_max
+CALL DELAY_max
+CALL clear_LCD
+MOV CX,12
+DEC DL
+JMP enter_12bitu
+raise_alarm_user:
+MOV DH,0
+MOV AL,0fh
+OUT port_a2,AL
+MOV AX,0abcdh
+JMP end_70h
+open_door_user:
+CALL open_door
+end_70h:
+RET
+intu ENDP
+
+ints PROC
+
+CALL open_door
+
+; CALL DELAY_0.04s
+; mov al,00h
+; out port_c2, al
+RET
+ints ENDP
+
+open_door PROC
+CALL clear_LCD
+MOV AL,8ah
+OUT port_b2,AL
+
+CALL DELAY_20ms
+
+MOV AL,0ah
+OUT port_b2,AL
+
+x31:        IN AL, port_c2
+CMP AL,0ffh
+JNZ x31
+CALL DELAY_20ms
+CALL close_door
+RET
+open_door ENDP
+
+close_door PROC
+MOV AL,03h
+OUT port_b2,AL
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+CALL DELAY_max
+
+
+RET
+close_door ENDP
+
+
+welcome_msg PROC
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,57h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints W
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+MOV AL,4Ch
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints L
+
+MOV AL,43h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints C
+
+MOV AL,4Fh
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints O
+
+MOV AL,4dh
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints M
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+RET
+welcome_msg ENDP
+
+update_msg PROC
+MOV AL,55h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints U
+
+MOV AL,50h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints P
+
+MOV AL,44h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints D
+
+MOV AL,41h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints A
+
+MOV AL,54h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints T
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,50h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints P
+
+MOV AL,41h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints A
+
+MOV AL,53h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints S
+
+MOV AL,53h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints S
+
+MOV AL,57h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints W
+
+MOV AL,4Fh
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints O
+
+MOV AL,52h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints R
+
+MOV AL,44h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints D
+
+RET
+update_msg ENDP
+
+clear_1digit_LCD PROC
+MOV AL,00h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,10h            ;shift left by 1
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,04h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,00h
+OUT port_b1,AL
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL             ;prints Space
+
+CALL DELAY_20ms
+MOV AL,10h            ;shift left by 1
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,04h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,00h
+OUT port_b1,AL
+
+RET
+clear_1digit_LCD ENDP
+
+error_msg PROC
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+MOV AL,4Eh
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints N
+
+MOV AL,54h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints T
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+MOV AL,52h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints R
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,31h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints 1
+
+MOV AL,32h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints 2
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,44h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints D
+
+MOV AL,49h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints I
+
+MOV AL,47h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints G
+
+MOV AL,49h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints I
+
+MOV AL,54h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints T
+
+MOV AL,53h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints S
+RET
+error_msg ENDP
+
+retry_msg PROC
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,0A0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,52h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints R
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+MOV AL,54h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints T
+
+MOV AL,52h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints R
+
+MOV AL,59h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Y
+
+RET
+retry_msg ENDP
+
+
+updateday_msg PROC
+MOV AL,55h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints U
+
+MOV AL,50h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints P
+
+MOV AL,44h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints D
+
+MOV AL,41h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints A
+
+MOV AL,54h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints T
+
+MOV AL,45h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints E
+
+MOV AL,0a0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,44h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints D
+
+MOV AL,41h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints A
+
+MOV AL,59h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Y
+
+MOV AL,0a0h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints Space
+
+MOV AL,50h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL ;prints P
+
+MOV AL,41h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints A
+
+MOV AL,53h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints S
+
+MOV AL,53h
+OUT port_a1,AL
+CALL DELAY_20ms
+MOV AL,05h
+OUT port_b1,AL
+CALL DELAY_20ms
+MOV AL,01h
+OUT port_b1,AL  ;prints S
+RET
+updateday_msg ENDP
+
+Nmi_24hrtimer:
+CALL clear_LCD
+CALL clear_1digit_LCD
+CALL updateday_msg
+startnmi:
+
+CALL keypad_input
+CMP AL,0bbh; Check for 'M'
+JZ master_Mode
+JMP startnmi
+
+IRET
+Switch_intR:
+CALL open_door
+STI
+CMP BP,0abcdh
+JZ x6
+JNZ start
+

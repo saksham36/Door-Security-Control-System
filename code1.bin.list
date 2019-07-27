@@ -1,0 +1,1724 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+code1.bin -- emu8086 assembler version: 4.08  
+ 
+[ 18-04-2019  --  21:11:51 ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       #make_bin#
+[   2]        :                                       
+[   3]        :                                       ; BIN is plain binary format similar to .com format, but not limited to 1 segment;
+[   4]        :                                       ; All values between # are directives, these values are saved into a separate .binf file.
+[   5]        :                                       ; Before loading .bin file emulator reads .binf file with the same file name.
+[   6]        :                                       
+[   7]        :                                       ; All directives are optional, if you don't need them, delete them.
+[   8]        :                                       
+[   9]        :                                       ; set loading address, .bin file will be loaded to this address:
+[  10]        :                                       #LOAD_SEGMENT=0500h#
+[  11]        :                                       #LOAD_OFFSET=0000h#
+[  12]        :                                       
+[  13]        :                                       ; set entry point:
+[  14]        :                                       #CS=0500h#	; same as loading segment
+[  15]        :                                       #IP=0000h#	; same as loading offset
+[  16]        :                                       
+[  17]        :                                       ; set segment registers
+[  18]        :                                       #DS=0500h#	; same as loading segment
+[  19]        :                                       #ES=0500h#	; same as loading segment
+[  20]        :                                       
+[  21]        :                                       ; set stack
+[  22]        :                                       #SS=0500h#	; same as loading segment
+[  23]        :                                       #SP=FFFEh#	; set to top of loading segment
+[  24]        :                                       
+[  25]        :                                       ; set general registers (optional)
+[  26]        :                                       #AX=0000h#
+[  27]        :                                       #BX=0000h#
+[  28]        :                                       #CX=0000h#
+[  29]        :                                       #DX=0000h#
+[  30]        :                                       #SI=0000h#
+[  31]        :                                       #DI=0000h#
+[  32]        :                                       #BP=0000h#
+[  33]        :                                       
+[  34]        :                                       
+[  35]        :                                       
+[  36]    0000: E9 FD 03                              jmp     st1
+[  37]    0003: 00 00 00 00 00                        db     5 dup(0)
+[  38]        :                                       
+[  39]        :                                       	;IVT entry for NMI (INT 02h)
+[  40]    0008: E9 0E                                 dw     Nmi_24hrtimer
+[  41]    000A: 00 00                                 dw     0000		
+[  42]    000C: 00 00 00 00 00 00 00 00 00 00 00 00   db     500 dup(0)
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00             
+[  43]        :                                       	
+[  44]        :                                       	;IVT entry for 80H
+[  45]    0200: FF 0E                                 	 dw     Switch_intR
+[  46]    0202: 00 00                                 dw     0000
+[  47]    0204: 00 00 00 00 00 00 00 00 00 00 00 00   	 db     508 dup(0)
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00                         
+[  48]    0400: FA                                    	st1:      cli ;Clear IF, now initiliaze RAM
+[  49]        :                                       		
+[  50]        :                                       	;intialize ds, es,ss to start of RAM
+[  51]    0401: B8 00 02                              mov       ax,0200h
+[  52]    0404: 8E D8                                 mov       ds,ax
+[  53]    0406: 8E C0                                 mov       es,ax
+[  54]    0408: 8E D0                                 mov       ss,ax
+[  55]    040A: BC FE FF                              mov       sp,0FFFEH
+[  56]        :                                       	; INITIALIZATION OF 8255,8253 BEGINS HERE
+[  57]        :                                       	
+[  58]        :                                       	port_a1 equ 00h
+[  59]        :                                       	port_b1 equ 02h
+[  60]        :                                       	port_c1 equ 04h
+[  61]        :                                       	creg1 equ 06h
+[  62]        :                                       	
+[  63]        :                                       	port_a2 equ 08H
+[  64]        :                                       	port_b2 equ 0Ah
+[  65]        :                                       	port_c2 equ 0Ch
+[  66]        :                                       	creg2 equ 0Eh
+[  67]        :                                       	
+[  68]        :                                       	cnt0_1 equ 10h
+[  69]        :                                       	cnt1_1 equ 12h
+[  70]        :                                       	cnt2_1 equ 14h
+[  71]        :                                       	creg3 equ 16h
+[  72]        :                                       	
+[  73]        :                                       	cnt0_2 equ 18h
+[  74]        :                                       	cnt1_2 equ 1Ah
+[  75]        :                                       	cnt2_2 equ 1Ch
+[  76]        :                                       	creg4 equ 1Eh
+[  77]        :                                       
+[  78]    040D: FB                                    	sti	  	
+[  79]    040E: B0 89                                 	mov al,89h  	; control word for 8255-2 I/O Mode, Port A - Mode 0, o/p, PCU - i/p Port B - Mode 0, o/p, PCL - i/p
+[  80]    0410: E6 0E                                 	out creg2,al
+[  81]        :                                       	
+[  82]    0412: B0 88                                 	mov al,88h	; control word for 8255-1 I/O Mode, Port A - Mode 0, o/p, PCU - i/p Port B - Mode 0, o/p, PCL - o/p
+[  83]    0414: E6 06                                 	out creg1,al
+[  84]        :                                       	
+[  85]    0416: B0 36                                 	mov al,36h	;control word for 8253-1 counter 0	16bit count, Mode 3, Bin
+[  86]    0418: E6 16                                 	out creg3,al
+[  87]        :                                       	
+[  88]    041A: B0 56                                 	mov al,56h  	;control word for 8253-1 counter 1 8bit LSB count, Mode 3, Bin
+[  89]    041C: E6 16                                 	out creg3,al
+[  90]        :                                       	
+[  91]    041E: B0 92                                 	mov al,92h  	;control word for 8253-1 counter 2, 8bit LSB count, Mode 1, Bin
+[  92]    0420: E6 16                                 	out creg3,al
+[  93]        :                                       
+[  94]    0422: B0 34                                 	mov al,34h  	;control word for 8253-2 counter 0 16bit count, Mode 2, Bin
+[  95]    0424: E6 1E                                 	out creg4,al
+[  96]        :                                       
+[  97]    0426: B0 5A                                 	mov al,5ah  	;control word for 8253-2 counter 1 8bit LSB count, Mode 5, Bin
+[  98]    0428: E6 1E                                 	out creg4,al
+[  99]        :                                       
+[ 100]    042A: B0 94                                 	mov al,94h  	;control word for 8253-2 counter 2 8bit LSB count Mode 2, Bin
+[ 101]    042C: E6 1E                                 	out creg4,al
+[ 102]        :                                       
+[ 103]    042E: B0 50                                 	mov al,50h	;load count lsb for 8253-1 counter 0 | Count value = 50000(dec)
+[ 104]    0430: E6 10                                 	out cnt0_1, al
+[ 105]        :                                       	
+[ 106]    0432: B0 C3                                 	mov al,0C3h 	;load count msb for 8253-1 counter 0
+[ 107]    0434: E6 10                                 	out cnt0_1, al
+[ 108]        :                                       	
+[ 109]    0436: B0 64                                 	mov al,64h	;load count for 8253-1 counter 1 | Count value = 100(dec)
+[ 110]    0438: E6 12                                 	out cnt1_1, al
+[ 111]        :                                       	
+[ 112]    043A: B0 1E                                 	mov al,1eh	;load count lsb for 8253-1 counter 2 (1 minute Timer) | Count value = 30(dec)
+[ 113]    043C: E6 14                                 	out cnt2_1, al
+[ 114]        :                                       	
+[ 115]        :                                       	
+[ 116]    043E: B0 C0                                 	mov al,0C0h	;load count for 8253-2  LSB counter 0 (24 hour counter) | Count value =43200(dec)
+[ 117]    0440: E6 18                                 	out cnt0_2, al
+[ 118]        :                                       	
+[ 119]    0442: B0 A8                                 	mov al,0A8h	;load count for 8253-2  MSB counter 0 (24 hour counter)
+[ 120]    0444: E6 18                                 	out cnt0_2, al
+[ 121]        :                                       	
+[ 122]    0446: B0 03                                 	mov al,3	;load count for 8253-2 counter 1 (Switch trigger counter) | Count value = 3(dec)
+[ 123]    0448: E6 1A                                 	out cnt1_2, al
+[ 124]        :                                       	
+[ 125]    044A: B0 02                                 	mov al,2	;load count for 8253-2 counter 2 | Count value = 2(dec)
+[ 126]    044C: E6 1C                                 	out cnt2_2, al
+[ 127]        :                                       	;INITIALIZATION OF 8255,8253 ENDS HERE
+[ 128]        :                                       
+[ 129]        :                                       
+[ 130]    044E: B0 00                                 	mov al,00h 	;default low output from 8255-2 upper port C
+[ 131]    0450: E6 0C                                 	out port_c2, al
+[ 132]        :                                       	
+[ 133]    0452: E8 3D 01                              	call DELAY_20ms ;LCD INITIALIZATION BEGINS
+[ 134]    0455: B0 04                                 	mov al,04h ;E=1 RW=0 RS=0 -> control write
+[ 135]    0457: E6 02                                 	out port_b1,al
+[ 136]    0459: E8 36 01                              	call DELAY_20ms
+[ 137]    045C: B0 00                                 	mov al,00h ;E=0 RW=0 RS=0 -> control write H-L transition
+[ 138]    045E: E6 02                                 	out port_b1,al
+[ 139]        :                                       	
+[ 140]    0460: B0 38                                 	mov al,38h ;Initialization
+[ 141]    0462: E6 00                                 	out port_a1,al
+[ 142]        :                                       	
+[ 143]    0464: B0 04                                 	mov al,04h ;E=1 RW=0 RS=0 -> control write
+[ 144]    0466: E6 02                                 	out port_b1,al
+[ 145]    0468: E8 27 01                              	call DELAY_20ms
+[ 146]    046B: B0 00                                 	mov al,00h ;E=0 RW=0 RS=0 -> control write H-L transition
+[ 147]    046D: E6 02                                 	out port_b1,al
+[ 148]    046F: E8 20 01                              	call DELAY_20ms
+[ 149]    0472: B0 0C                                 	mov al,0Ch ;LCD ON, cursor ON, curson blinking OFF
+[ 150]    0474: E6 00                                 	out port_a1,al
+[ 151]    0476: B0 04                                 	mov al,04h ;E=1 RW=0 RS=0 -> control write
+[ 152]    0478: E6 02                                 	out port_b1,al
+[ 153]    047A: E8 15 01                              	call DELAY_20ms
+[ 154]    047D: B0 00                                 	mov al,00h ;E=0 RW=0 RS=0 -> control write H-L transition
+[ 155]    047F: E6 02                                 	out port_b1,al
+[ 156]        :                                       	
+[ 157]    0481: B0 06                                 	mov al,06h ;move cursor right
+[ 158]    0483: E6 00                                 	out port_a1,al
+[ 159]    0485: E8 0A 01                              	call DELAY_20ms
+[ 160]    0488: B0 04                                 	mov al,04h ;E=1 RW=0 RS=0 -> control write
+[ 161]    048A: E6 02                                 	out port_b1,al
+[ 162]    048C: E8 03 01                              	call DELAY_20ms
+[ 163]    048F: B0 00                                 	mov al,00h ;E=0 RW=0 RS=0 -> control write H-L transition
+[ 164]    0491: E6 02                                 	out port_b1,al
+[ 165]    0493: B0 4C                                 	mov al,4ch
+[ 166]    0495: E6 00                                 	out port_a1,al
+[ 167]    0497: E8 F8 00                              	call DELAY_20ms  ;LCD INITIALIZATION ENDS		
+[ 168]        :                                       	
+[ 169]    049A: B8 00 02                              mov ax,0200h ; Initialize DS
+[ 170]    049D: 8E D8                                 	mov ds,ax
+[ 171]        :                                       	
+[ 172]    049F: BE 00 00                              	mov si,0000h
+[ 173]    04A2: B0 ED                                 	mov al,0edh	;hard coding pass-word ; 9999999999999999 (BD -> Keyboard value)
+[ 174]    04A4: 88 04                                 	mov [si],al
+[ 175]        :                                       	
+[ 176]    04A6: B0 EB                                 	mov al,0ebh
+[ 177]    04A8: 88 44 01                              	mov [si+1],al
+[ 178]        :                                       	
+[ 179]    04AB: B0 E7                                 	mov al,0e7h
+[ 180]    04AD: 88 44 02                              	mov [si+2],al
+[ 181]        :                                       	
+[ 182]    04B0: B0 DE                                 	mov al,0deh
+[ 183]    04B2: 88 44 03                              	mov [si+3],al
+[ 184]        :                                       	
+[ 185]    04B5: B0 DD                                 	mov al,0ddh
+[ 186]    04B7: 88 44 04                              	mov [si+4],al
+[ 187]        :                                       	
+[ 188]    04BA: B0 DB                                 	mov al,0dbh
+[ 189]    04BC: 88 44 05                              	mov [si+5],al
+[ 190]        :                                       	
+[ 191]    04BF: B0 D7                                 	mov al,0d7h
+[ 192]    04C1: 88 44 06                              	mov [si+6],al
+[ 193]        :                                       	
+[ 194]    04C4: B0 BE                                 	mov al,0beh
+[ 195]    04C6: 88 44 07                              	mov [si+7],al
+[ 196]        :                                       	
+[ 197]    04C9: B0 BD                                 	mov al,0bdh
+[ 198]    04CB: 88 44 08                              	mov [si+8],al
+[ 199]        :                                       	
+[ 200]    04CE: B0 ED                                 	mov al,0edh
+[ 201]    04D0: 88 44 09                              	mov [si+9],al
+[ 202]        :                                       	
+[ 203]    04D3: B0 EB                                 	mov al,0ebh
+[ 204]    04D5: 88 44 0A                              	mov [si+0ah],al
+[ 205]        :                                       	
+[ 206]    04D8: B0 E7                                 	mov al,0e7h
+[ 207]    04DA: 88 44 0B                              	mov [si+0bh],al
+[ 208]        :                                       	
+[ 209]    04DD: B0 DE                                 	mov al,0deh
+[ 210]    04DF: 88 44 0C                              	mov [si+0ch],al
+[ 211]        :                                       	
+[ 212]    04E2: B0 DD                                 	mov al,0ddh
+[ 213]    04E4: 88 44 0D                              	mov [si+0dh],al
+[ 214]        :                                       		
+[ 215]    04E7: B0 DB                                 		mov al,0dbh
+[ 216]    04E9: 88 44 0E                              	mov [si+0eh],al
+[ 217]        :                                       	
+[ 218]    04EC: B0 D7                                 	mov al,0d7h
+[ 219]    04EE: 88 44 0F                              	mov [si+0fh],al
+[ 220]        :                                       	
+[ 221]    04F1: 83 C6 0F                              	add si,000fh
+[ 222]    04F4: 46                                    	inc si ; Update si to store future entry
+[ 223]        :                                       	
+[ 224]        :                                       	
+[ 225]    04F5: B0 BD                                 	mov al,0bdh	;hard coding alarm pass-word ; 99999999999999
+[ 226]    04F7: 88 04                                 	mov [si],al
+[ 227]        :                                       	
+[ 228]    04F9: B0 BD                                 	mov al,0bdh
+[ 229]    04FB: 88 44 01                              	mov [si+1],al
+[ 230]        :                                       	
+[ 231]    04FE: B0 BD                                 	mov al,0bdh
+[ 232]    0500: 88 44 02                              	mov [si+2],al
+[ 233]        :                                       	
+[ 234]    0503: B0 BD                                 	mov al,0bdh
+[ 235]    0505: 88 44 03                              	mov [si+3],al
+[ 236]        :                                       	
+[ 237]    0508: B0 BD                                 	mov al,0bdh
+[ 238]    050A: 88 44 04                              	mov [si+4],al
+[ 239]        :                                       	
+[ 240]    050D: B0 BD                                 	mov al,0bdh
+[ 241]    050F: 88 44 05                              	mov [si+5],al
+[ 242]        :                                       	
+[ 243]    0512: B0 BD                                 	mov al,0bdh
+[ 244]    0514: 88 44 06                              	mov [si+6],al
+[ 245]        :                                       	
+[ 246]    0517: B0 BD                                 	mov al,0bdh
+[ 247]    0519: 88 44 07                              	mov [si+7],al
+[ 248]        :                                       	
+[ 249]    051C: B0 BD                                 	mov al,0bdh
+[ 250]    051E: 88 44 08                              	mov [si+8],al
+[ 251]        :                                       	
+[ 252]    0521: B0 BD                                 	mov al,0bdh
+[ 253]    0523: 88 44 09                              	mov [si+9],al
+[ 254]        :                                       	
+[ 255]    0526: B0 BD                                 	mov al,0bdh
+[ 256]    0528: 88 44 0A                              	mov [si+0ah],al
+[ 257]        :                                       	
+[ 258]    052B: B0 BD                                 	mov al,0bdh
+[ 259]    052D: 88 44 0B                              	mov [si+0bh],al
+[ 260]        :                                       	
+[ 261]    0530: B0 BD                                 	mov al,0bdh
+[ 262]    0532: 88 44 0C                              	mov [si+0ch],al
+[ 263]        :                                       	
+[ 264]    0535: B0 BD                                 	mov al,0bdh
+[ 265]    0537: 88 44 0D                              	mov [si+0dh],al
+[ 266]        :                                       	
+[ 267]    053A: 83 C6 0D                              	add si,000dh
+[ 268]    053D: 46                                    inc si ;Update si to store future values
+[ 269]        :                                       	
+[ 270]    053E: B0 FF                                 	mov al,0ffh ; Switch off all LEDs
+[ 271]    0540: E6 08                                 	out port_a2,al
+[ 272]        :                                       	
+[ 273]    0542: E8 88 02                              	start:	call clear_LCD	
+[ 274]    0545: E8 A5 04                              		call welcome_msg
+[ 275]        :                                       	
+[ 276]    0548: BD 00 00                              		mov bp,00h
+[ 277]    054B: E8 99 02                              		call keypad_input
+[ 278]    054E: 3C BB                                 		cmp al,0bbh
+[ 279]    0550: 74 11                                 		jz master_Mode
+[ 280]    0552: EB EE                                 		jmp start
+[ 281]        :                                       
+[ 282]    0554: E8 76 02                              x6:     call clear_LCD
+[ 283]    0557: E8 93 04                              call welcome_msg
+[ 284]    055A: E8 8A 02                              call keypad_input
+[ 285]    055D: 3C B7                                 	cmp al,0b7h
+[ 286]    055F: 74 25                                 	jz User_Mode
+[ 287]    0561: EB F1                                 	jmp x6 ;press valid key
+[ 288]        :                                       	
+[ 289]    0563:                                       master_Mode:	
+[ 290]    0563: E8 32 01                              call intm
+[ 291]    0566: BD CD AB                              mov bp,0abcdh
+[ 292]    0569: 3D CD AB                              cmp ax,0abcdh
+[ 293]    056C: 75 E6                                 jnz x6
+[ 294]    056E: E8 76 02                              x8:     call keypad_input
+[ 295]    0571: 3C 7D                                 	cmp al,7Dh
+[ 296]    0573: 74 02                                 	jz Alarm_Mode
+[ 297]    0575: 75 F7                                 	jnz x8
+[ 298]        :                                       	
+[ 299]    0577:                                       Alarm_Mode:
+[ 300]    0577: E8 D2 02                              call inta
+[ 301]    057A: 80 FE 06                              cmp dh,6h
+[ 302]    057D: 74 C3                                 jz start
+[ 303]    057F: 80 FE 01                              cmp dh,1h
+[ 304]    0582: 74 D0                                 jz x6
+[ 305]    0584: EB 0A                                 jmp x70
+[ 306]        :                                       
+[ 307]    0586:                                       User_Mode:	
+[ 308]    0586: E8 4B 03                              call intu
+[ 309]    0589: 3D CD AB                              cmp ax,0abcdh
+[ 310]    058C: 74 E0                                 jz x8
+[ 311]    058E: 75 C4                                 jnz x6		
+[ 312]        :                                       	
+[ 313]    0590:                                       x70:	
+[ 314]    0590: EB FE                                 stop: jmp stop
+[ 315]        :                                       
+[ 316]    0592:                                       DELAY_20ms proc
+[ 317]        :                                       	
+[ 318]    0592: B5 05                                 	MOV    	CH,5
+[ 319]    0594: 90                                    	X4:	NOP
+[ 320]    0595: 90                                    		NOP
+[ 321]    0596: FE CD                                 		DEC 	CH
+[ 322]    0598: 75 FA                                 		JNZ 	X4
+[ 323]    059A: C3                                    	RET
+[ 324]        :                                       DELAY_20ms endp
+[ 325]    059B:                                       DELAY_0.04s proc
+[ 326]        :                                       	
+[ 327]    059B: B9 FF 4F                              	MOV	cx,4fffh
+[ 328]    059E: 90                                    	X17:	NOP
+[ 329]    059F: 90                                    		NOP
+[ 330]    05A0: 49                                    		DEC 	cx
+[ 331]    05A1: 75 FB                                 		JNZ 	X17
+[ 332]    05A3: C3                                    	RET
+[ 333]        :                                       DELAY_0.04s endp
+[ 334]    05A4:                                       DELAY_max proc
+[ 335]        :                                       	
+[ 336]    05A4: B9 FF FF                              	MOV	cx,0ffffh
+[ 337]    05A7: 90                                    	X16:	NOP
+[ 338]    05A8: 90                                    		NOP
+[ 339]    05A9: 49                                    		DEC 	cx
+[ 340]    05AA: 75 FB                                 		JNZ 	X16
+[ 341]    05AC: C3                                    	RET
+[ 342]        :                                       DELAY_max endp
+[ 343]        :                                       
+[ 344]    05AD:                                       enter_LCD proc
+[ 345]    05AD: B0 A0                                 	mov al,0A0h
+[ 346]    05AF: E6 00                                 	out port_a1,al
+[ 347]    05B1: E8 DE FF                              	call DELAY_20ms
+[ 348]    05B4: B0 05                                 	mov al,05h ;E=1 RW=0 RS=1 -> data write
+[ 349]    05B6: E6 02                                 	out port_b1,al
+[ 350]    05B8: E8 D7 FF                              	call DELAY_20ms
+[ 351]    05BB: B0 01                                 	mov al,01h ;E=1 RW=0 RS=1 -> data write H-L transition
+[ 352]    05BD: E6 02                                 	out port_b1,al  ;prints Space
+[ 353]        :                                       	
+[ 354]    05BF: B0 A0                                 	mov al,0A0h
+[ 355]    05C1: E6 00                                 	out port_a1,al
+[ 356]    05C3: E8 CC FF                              	call DELAY_20ms
+[ 357]    05C6: B0 05                                 	mov al,05h
+[ 358]    05C8: E6 02                                 	out port_b1,al
+[ 359]    05CA: E8 C5 FF                              	call DELAY_20ms
+[ 360]    05CD: B0 01                                 	mov al,01h
+[ 361]    05CF: E6 02                                 	out port_b1,al  ;prints Space
+[ 362]        :                                       	
+[ 363]    05D1: B0 50                                 	mov al,50h
+[ 364]    05D3: E6 00                                 	out port_a1,al
+[ 365]    05D5: E8 BA FF                              	call DELAY_20ms
+[ 366]    05D8: B0 05                                 	mov al,05h
+[ 367]    05DA: E6 02                                 	out port_b1,al
+[ 368]    05DC: E8 B3 FF                              	call DELAY_20ms
+[ 369]    05DF: B0 01                                 	mov al,01h
+[ 370]    05E1: E6 02                                 	out port_b1,al  ;prints P
+[ 371]        :                                       	
+[ 372]    05E3: B0 52                                 	mov al,52h
+[ 373]    05E5: E6 00                                 	out port_a1,al
+[ 374]    05E7: E8 A8 FF                              	call DELAY_20ms
+[ 375]    05EA: B0 05                                 	mov al,05h
+[ 376]    05EC: E6 02                                 	out port_b1,al
+[ 377]    05EE: E8 A1 FF                              	call DELAY_20ms
+[ 378]    05F1: B0 01                                 	mov al,01h
+[ 379]    05F3: E6 02                                 	out port_b1,al  ;prints R
+[ 380]        :                                       	
+[ 381]    05F5: B0 45                                 	mov al,45h
+[ 382]    05F7: E6 00                                 	out port_a1,al
+[ 383]    05F9: E8 96 FF                              	call DELAY_20ms
+[ 384]    05FC: B0 05                                 	mov al,05h
+[ 385]    05FE: E6 02                                 	out port_b1,al
+[ 386]    0600: E8 8F FF                              	call DELAY_20ms
+[ 387]    0603: B0 01                                 	mov al,01h
+[ 388]    0605: E6 02                                 	out port_b1,al  ;prints E
+[ 389]        :                                       	
+[ 390]    0607: B0 53                                 	mov al,53h
+[ 391]    0609: E6 00                                 	out port_a1,al
+[ 392]    060B: E8 84 FF                              	call DELAY_20ms
+[ 393]    060E: B0 05                                 	mov al,05h
+[ 394]    0610: E6 02                                 	out port_b1,al
+[ 395]    0612: E8 7D FF                              	call DELAY_20ms
+[ 396]    0615: B0 01                                 	mov al,01h
+[ 397]    0617: E6 02                                 	out port_b1,al  ;prints S
+[ 398]        :                                       	
+[ 399]    0619: B0 53                                 	mov al,53h
+[ 400]    061B: E6 00                                 	out port_a1,al
+[ 401]    061D: E8 72 FF                              	call DELAY_20ms
+[ 402]    0620: B0 05                                 	mov al,05h
+[ 403]    0622: E6 02                                 	out port_b1,al
+[ 404]    0624: E8 6B FF                              	call DELAY_20ms
+[ 405]    0627: B0 01                                 	mov al,01h
+[ 406]    0629: E6 02                                 	out port_b1,al  ;prints S
+[ 407]        :                                       	
+[ 408]    062B: B0 A0                                 	mov al,0A0h
+[ 409]    062D: E6 00                                 	out port_a1,al
+[ 410]    062F: E8 60 FF                              	call DELAY_20ms
+[ 411]    0632: B0 05                                 	mov al,05h
+[ 412]    0634: E6 02                                 	out port_b1,al
+[ 413]    0636: E8 59 FF                              	call DELAY_20ms
+[ 414]    0639: B0 01                                 	mov al,01h
+[ 415]    063B: E6 02                                 	out port_b1,al  ;prints Space
+[ 416]        :                                       	
+[ 417]    063D: B0 45                                 	mov al,45h
+[ 418]    063F: E6 00                                 	out port_a1,al
+[ 419]    0641: E8 4E FF                              	call DELAY_20ms
+[ 420]    0644: B0 05                                 	mov al,05h
+[ 421]    0646: E6 02                                 	out port_b1,al
+[ 422]    0648: E8 47 FF                              	call DELAY_20ms
+[ 423]    064B: B0 01                                 	mov al,01h
+[ 424]    064D: E6 02                                 	out port_b1,al  ;prints E
+[ 425]        :                                       	
+[ 426]    064F: B0 4E                                 	mov al,4Eh
+[ 427]    0651: E6 00                                 	out port_a1,al
+[ 428]    0653: E8 3C FF                              	call DELAY_20ms
+[ 429]    0656: B0 05                                 	mov al,05h
+[ 430]    0658: E6 02                                 	out port_b1,al
+[ 431]    065A: E8 35 FF                              	call DELAY_20ms
+[ 432]    065D: B0 01                                 	mov al,01h
+[ 433]    065F: E6 02                                 	out port_b1,al  ;prints N
+[ 434]        :                                       	
+[ 435]    0661: B0 54                                 	mov al,54h
+[ 436]    0663: E6 00                                 	out port_a1,al
+[ 437]    0665: E8 2A FF                              	call DELAY_20ms
+[ 438]    0668: B0 05                                 	mov al,05h
+[ 439]    066A: E6 02                                 	out port_b1,al
+[ 440]    066C: E8 23 FF                              	call DELAY_20ms
+[ 441]    066F: B0 01                                 	mov al,01h
+[ 442]    0671: E6 02                                 	out port_b1,al  ;prints T
+[ 443]        :                                       	
+[ 444]    0673: B0 45                                 	mov al,45h
+[ 445]    0675: E6 00                                 	out port_a1,al
+[ 446]    0677: E8 18 FF                              	call DELAY_20ms
+[ 447]    067A: B0 05                                 	mov al,05h
+[ 448]    067C: E6 02                                 	out port_b1,al
+[ 449]    067E: E8 11 FF                              	call DELAY_20ms
+[ 450]    0681: B0 01                                 	mov al,01h
+[ 451]    0683: E6 02                                 	out port_b1,al  ;prints E
+[ 452]        :                                       	
+[ 453]    0685: B0 52                                 	mov al,52h
+[ 454]    0687: E6 00                                 	out port_a1,al
+[ 455]    0689: E8 06 FF                              	call DELAY_20ms
+[ 456]    068C: B0 05                                 	mov al,05h
+[ 457]    068E: E6 02                                 	out port_b1,al
+[ 458]    0690: E8 FF FE                              	call DELAY_20ms
+[ 459]    0693: B0 01                                 	mov al,01h
+[ 460]    0695: E6 02                                 	out port_b1,al  ;prints R
+[ 461]    0697: C3                                    RET
+[ 462]        :                                       enter_LCD endp	
+[ 463]        :                                       	
+[ 464]        :                                       	
+[ 465]    0698:                                       intm proc
+[ 466]        :                                       			
+[ 467]    0698: E8 32 01                              		call clear_LCD	
+[ 468]    069B: B0 FE                                 		mov al,0feh
+[ 469]    069D: E6 08                                 		out port_a2,al	  	;turns on enter password LED	
+[ 470]    069F: B9 10 00                              		mov cx,16
+[ 471]        :                                       						
+[ 472]    06A2:                                       enter_16bit:		
+[ 473]    06A2: E8 42 01                              		call keypad_input
+[ 474]    06A5: 3C 7E                                 		cmp al,7eh ;  Check if pressed 'C'
+[ 475]    06A7: 74 3E                                 		jz pressc
+[ 476]    06A9: 3C 7B                                 		cmp al,7bh ; Check if pressed 'AC'
+[ 477]    06AB: 74 41                                 		jz pressac
+[ 478]    06AD: 3C 77                                 		cmp al,77h ; Check if pressed 'ENTER'
+[ 479]    06AF: 74 48                                 		jz press_enter
+[ 480]    06B1: 3C BB                                 		cmp al,0bbh ;Check if pressed 'M'
+[ 481]    06B3: 74 2F                                 		jz nop_master
+[ 482]    06B5: 3C B7                                 		cmp al,0b7h ; Check if pressed 'U'
+[ 483]    06B7: 74 2B                                 		jz nop_master
+[ 484]    06B9: 3C 7D                                 		cmp al,7dh ; Check if pressed 'A'
+[ 485]    06BB: 74 27                                 		jz nop_master
+[ 486]    06BD: 88 04                                 		mov [si],al		
+[ 487]    06BF: E8 F8 00                              		CALL asterisk
+[ 488]    06C2: 46                                    		inc si	
+[ 489]    06C3: 49                                    		dec cx
+[ 490]    06C4: 75 DC                                 		jnz enter_16bit
+[ 491]    06C6:                                       disp_entermaster:
+[ 492]    06C6: E8 1E 01                              		call keypad_input
+[ 493]    06C9: 3C 7E                                 		cmp al,7eh
+[ 494]    06CB: 74 1A                                 		jz pressc
+[ 495]    06CD: 3C 7B                                 		cmp al,7bh
+[ 496]    06CF: 74 1D                                 		jz pressac
+[ 497]    06D1: 3C 77                                 		cmp al,77h
+[ 498]    06D3: 74 24                                 		jz press_enter
+[ 499]    06D5: E8 F5 00                              asd:	CALL clear_LCD
+[ 500]    06D8: E8 D2 FE                              		CALL enter_LCD	
+[ 501]    06DB: E8 09 01                              		call keypad_input
+[ 502]    06DE: 3C 77                                 		cmp al,77h
+[ 503]    06E0: 74 17                                 		jz press_enter
+[ 504]    06E2: 75 F1                                 		jnz asd	
+[ 505]        :                                       		
+[ 506]    06E4: 90                                    nop_master: 	nop
+[ 507]    06E5: EB BB                                 		jmp enter_16bit		
+[ 508]    06E7: E8 EB 04                              pressc:  	call clear_1digit_LCD
+[ 509]    06EA: 4E                                    		dec si
+[ 510]    06EB: 41                                    		inc cx
+[ 511]    06EC: EB B4                                 		jmp enter_16bit
+[ 512]    06EE:                                       pressac:
+[ 513]    06EE: E8 DC 00                              		CALL clear_LCD
+[ 514]    06F1: B9 10 00                              		mov cx,16
+[ 515]    06F4: BE 1E 00                              		mov si,1eh		;start of pass segment
+[ 516]    06F7: EB A9                                 		jmp enter_16bit
+[ 517]    06F9:                                       press_enter:
+[ 518]    06F9: E8 D1 00                              		CALL clear_LCD
+[ 519]    06FC: B0 FF                                 		mov al,0ffh ; All LED off
+[ 520]    06FE: E6 08                                 		out port_a2,al
+[ 521]    0700: 83 F9 00                              		cmp cx,0
+[ 522]    0703: 75 03 E9 8C 00                        		jz cmp_pass
+[ 523]    0708: E9 A5 00                              		jmp raise_alarm
+[ 524]        :                                       
+[ 525]        :                                       
+[ 526]    070B:                                       day_pass:
+[ 527]    070B: BE 2E 00                              		mov si,002Eh
+[ 528]    070E: B0 FD                                 		mov al,0fdh ; Retry/Update is on
+[ 529]    0710: E6 08                                 		out port_a2,al
+[ 530]    0712: E8 8F FE                              		call DELAY_max
+[ 531]    0715: E8 8C FE                              		call DELAY_max
+[ 532]    0718: E8 89 FE                              		call DELAY_max
+[ 533]    071B: E8 AF 00                              		call clear_LCD
+[ 534]    071E: B9 0C 00                              		mov cx,12
+[ 535]    0721:                                       enter_12bit:		
+[ 536]    0721: E8 C3 00                              		call keypad_input
+[ 537]    0724: 3C 7E                                 		cmp al,7eh ;Check for 'C'
+[ 538]    0726: 74 3E                                 		jz presscday
+[ 539]    0728: 3C BB                                 		cmp al,0bbh ;Check for 'M'
+[ 540]    072A: 74 37                                 		jz nop_day
+[ 541]    072C: 3C B7                                 		cmp al,0b7h ;Check for U
+[ 542]    072E: 74 33                                 		jz nop_day
+[ 543]    0730: 3C 7D                                 		cmp al,7dh ;Check for A
+[ 544]    0732: 74 2F                                 		jz nop_day
+[ 545]    0734: 3C 7B                                 		cmp al,7bh ;Check for AC
+[ 546]    0736: 74 35                                 		jz pressacday
+[ 547]    0738: 3C 77                                 		cmp al,77h ;Check for ENTER
+[ 548]    073A: 74 36                                 		jz press_enterday
+[ 549]    073C: 88 04                                 		mov [si],al		
+[ 550]    073E: E8 79 00                              		CALL asterisk
+[ 551]    0741: 46                                    		inc si	
+[ 552]    0742: 49                                    		dec cx
+[ 553]    0743: 75 DC                                 		jnz enter_12bit		
+[ 554]    0745:                                       disp_enter:
+[ 555]    0745: E8 9F 00                              		call keypad_input
+[ 556]    0748: 3C 7E                                 		cmp al,7eh
+[ 557]    074A: 74 1A                                 		jz presscday
+[ 558]    074C: 3C 7B                                 		cmp al,7bh
+[ 559]    074E: 74 1D                                 		jz pressacday
+[ 560]    0750: 3C 77                                 		cmp al,77h
+[ 561]    0752: 74 1E                                 		jz press_enterday		
+[ 562]    0754: E8 76 00                              asd1:	 	 	CALL clear_LCD
+[ 563]    0757: E8 53 FE                              			CALL enter_LCD				
+[ 564]    075A: E8 8A 00                              			call keypad_input
+[ 565]    075D: 3C 77                                 			cmp al,77h ;Check for ENTER
+[ 566]    075F: 74 11                                 			jz press_enterday
+[ 567]    0761: 75 F1                                 			jnz asd1
+[ 568]    0763: 90                                    nop_day:	nop
+[ 569]    0764: EB BB                                 		jmp enter_12bit	
+[ 570]        :                                       		
+[ 571]    0766:                                       presscday:
+[ 572]    0766: E8 6C 04                              		call clear_1digit_LCD
+[ 573]    0769: 4E                                    		dec si
+[ 574]    076A: 41                                    		inc cx
+[ 575]    076B: EB B4                                 		jmp enter_12bit
+[ 576]    076D:                                       pressacday:
+[ 577]    076D: E8 5D 00                              		CALL clear_LCD
+[ 578]    0770: EB 99                                 		jmp day_pass
+[ 579]    0772:                                       press_enterday:
+[ 580]    0772: E8 58 00                              		CALL clear_LCD
+[ 581]    0775: B0 FF                                 		mov al,0ffh
+[ 582]    0777: E6 08                                 		out port_a2,al
+[ 583]    0779: 83 F9 00                              		cmp cx,0
+[ 584]    077C: 75 10                                 		jnz err_msg
+[ 585]    077E: B0 FB                                 		mov al,0fbh
+[ 586]    0780: E6 08                                 		out port_a2,al
+[ 587]        :                                       			
+[ 588]    0782: E8 1F FE                              		call DELAY_max
+[ 589]    0785: E8 1C FE                              		call DELAY_max
+[ 590]        :                                       		
+[ 591]        :                                       		
+[ 592]    0788: B0 FF                                 		mov al,0ffh
+[ 593]    078A: E6 08                                 		out port_a2,al
+[ 594]    078C: 74 2B                                 		jz end_69h
+[ 595]    078E:                                       err_msg:
+[ 596]    078E: E8 85 04                              		call error_msg
+[ 597]    0791: E9 77 FF                              		jmp day_pass
+[ 598]    0794:                                       cmp_pass:
+[ 599]    0794: FC                                    		cld
+[ 600]    0795: BE 00 00                              		mov si,0000h
+[ 601]    0798: BF 1E 00                              		mov di,001Eh
+[ 602]    079B: B9 11 00                              		mov cx,17
+[ 603]    079E: 8A 04                                 x5:		mov al,[si]
+[ 604]    07A0: 8A 1D                                 		mov bl,[di]
+[ 605]    07A2: 49                                    		dec cx
+[ 606]    07A3: 75 03 E9 63 FF                        		jz day_pass
+[ 607]    07A8: 3A C3                                 		cmp al,bl
+[ 608]    07AA: 75 04                                 		jnz raise_alarm
+[ 609]    07AC: 46                                    		inc si
+[ 610]    07AD: 47                                    		inc di
+[ 611]    07AE: EB EE                                 		jmp x5
+[ 612]        :                                       		
+[ 613]        :                                       		
+[ 614]    07B0:                                       raise_alarm:
+[ 615]    07B0: B6 05                                 		mov dh,5h
+[ 616]    07B2: B0 0F                                 		mov al,0fh
+[ 617]    07B4: E6 08                                 		out port_a2,al	
+[ 618]    07B6: B8 CD AB                              		mov ax,0abcdh
+[ 619]    07B9:                                       end_69h:
+[ 620]    07B9: C3                                    ret				
+[ 621]        :                                       intm endp
+[ 622]        :                                       
+[ 623]    07BA:                                       asterisk proc
+[ 624]    07BA: B0 2A                                 		mov al,2Ah
+[ 625]    07BC: E6 00                                 		out port_a1,al
+[ 626]    07BE: E8 D1 FD                              		call DELAY_20ms
+[ 627]    07C1: B0 05                                 		mov al,05h
+[ 628]    07C3: E6 02                                 		out port_b1,al
+[ 629]    07C5: E8 CA FD                              		call DELAY_20ms
+[ 630]    07C8: B0 01                                 		mov al,01h
+[ 631]    07CA: E6 02                                 		out port_b1,al  ;prints *
+[ 632]    07CC: C3                                    ret
+[ 633]        :                                       asterisk endp
+[ 634]        :                                       
+[ 635]    07CD:                                       clear_LCD proc
+[ 636]    07CD: B0 00                                 	mov al,00h
+[ 637]    07CF: E6 02                                 	out port_b1,al
+[ 638]    07D1: E8 BE FD                              	call DELAY_20ms
+[ 639]    07D4: B0 01                                 	mov al,01h			;Clear Display
+[ 640]    07D6: E6 00                                 	out port_a1,al
+[ 641]    07D8: E8 B7 FD                              	call DELAY_20ms
+[ 642]    07DB: B0 04                                 	mov al,04h
+[ 643]    07DD: E6 02                                 	out port_b1,al
+[ 644]    07DF: E8 B0 FD                              	call DELAY_20ms
+[ 645]    07E2: B0 00                                 	mov al,00h
+[ 646]    07E4: E6 02                                 	out port_b1,al
+[ 647]    07E6: C3                                    RET
+[ 648]        :                                       clear_LCD endp		
+[ 649]        :                                       	
+[ 650]    07E7:                                       keypad_input proc 			;SubR for keypad entry,al has unique key input value.
+[ 651]    07E7: B0 00                                 x0:		mov al,00h
+[ 652]    07E9: E6 04                                 		out port_c1,al
+[ 653]    07EB: E4 04                                 x1:		in al, port_c1
+[ 654]    07ED: 24 F0                                 		and al,0f0h
+[ 655]    07EF: 3C F0                                 		cmp al,0f0h
+[ 656]    07F1: 75 F8                                 		jnz x1
+[ 657]    07F3: E8 9C FD                              		CALL DELAY_20ms
+[ 658]        :                                       		
+[ 659]    07F6: B0 00                                 		mov al,00h				; Check for key press
+[ 660]    07F8: E6 04                                 		out 04,al
+[ 661]    07FA:                                       x2:
+[ 662]    07FA: E4 04                                 		in al, port_c1
+[ 663]    07FC: 24 F0                                 		and al,0F0h
+[ 664]    07FE: 3C F0                                 		cmp al,0F0h
+[ 665]    0800: 74 F8                                 		jz x2
+[ 666]    0802: E8 8D FD                              		CALL DELAY_20ms
+[ 667]        :                                       		
+[ 668]    0805: B0 00                                 		mov al,00h				; Check for key press
+[ 669]    0807: E6 04                                 		out 04,al
+[ 670]    0809: E4 04                                 		in al, port_c1
+[ 671]    080B: 24 F0                                 		and al,0F0h
+[ 672]    080D: 3C F0                                 		cmp al,0F0h
+[ 673]    080F: 74 E9                                 		jz x2
+[ 674]        :                                       		
+[ 675]    0811: B0 0E                                 		mov al,0Eh				;Check for key press column 1
+[ 676]    0813: 8A D8                                 		mov bl,al
+[ 677]    0815: E6 04                                 		out port_c1,al
+[ 678]    0817: E4 04                                 		in al, port_c1
+[ 679]    0819: 24 F0                                 		and al,0f0h
+[ 680]    081B: 3C F0                                 		cmp al,0f0h
+[ 681]    081D: 75 2A                                 		jnz x3
+[ 682]        :                                       		
+[ 683]    081F: B0 0D                                 		mov al,0Dh				;Check for key press column 2
+[ 684]    0821: 8A D8                                 		mov bl,al
+[ 685]    0823: E6 04                                 		out port_c1,al
+[ 686]    0825: E4 04                                 		in al, port_c1
+[ 687]    0827: 24 F0                                 		and al,0f0h
+[ 688]    0829: 3C F0                                 		cmp al,0f0h
+[ 689]    082B: 75 1C                                 		jnz x3
+[ 690]        :                                       		
+[ 691]    082D: B0 0B                                 		mov al,0Bh				;Check for key press column 3
+[ 692]    082F: 8A D8                                 		mov bl,al
+[ 693]    0831: E6 04                                 		out port_c1,al
+[ 694]    0833: E4 04                                 		in al, port_c1
+[ 695]    0835: 24 F0                                 		and al,0f0h
+[ 696]    0837: 3C F0                                 		cmp al,0f0h
+[ 697]    0839: 75 0E                                 		jnz x3
+[ 698]        :                                       		
+[ 699]    083B: B0 07                                 		mov al,07h				;Check for key press column 4
+[ 700]    083D: 8A D8                                 		mov bl,al
+[ 701]    083F: E6 04                                 		out port_c1,al
+[ 702]    0841: E4 04                                 		in al,port_c1
+[ 703]    0843: 24 F0                                 		and al,0f0h
+[ 704]    0845: 3C F0                                 		cmp al,0f0h
+[ 705]    0847: 74 B1                                 		jz x2
+[ 706]        :                                       		
+[ 707]    0849: 0A C3                                 x3:		or al,bl		
+[ 708]    084B: C3                                    ret
+[ 709]        :                                       keypad_input endp
+[ 710]        :                                       
+[ 711]    084C:                                       inta proc
+[ 712]    084C: B0 0E                                 	mov al,00eh
+[ 713]    084E: E6 08                                 	out port_a2,al
+[ 714]        :                                       	
+[ 715]        :                                       	
+[ 716]        :                                       	
+[ 717]    0850: B9 0E 00                              	mov cx,14
+[ 718]    0853: BE 3A 00                              	mov si,3ah					;store the 16-bit entered pass after the hard coded pass word	
+[ 719]    0856:                                       enter_14bit:		
+[ 720]    0856: E8 8E FF                              		call keypad_input
+[ 721]    0859: 3C 7E                                 		cmp al,7eh
+[ 722]    085B: 74 3E                                 		jz pressc_alarm
+[ 723]    085D: 3C BB                                 		cmp al,0bbh
+[ 724]    085F: 74 37                                 		jz nop_alarm
+[ 725]    0861: 3C B7                                 		cmp al,0b7h
+[ 726]    0863: 74 33                                 		jz nop_alarm
+[ 727]    0865: 3C 7D                                 		cmp al,7dh
+[ 728]    0867: 74 2F                                 		jz nop_alarm
+[ 729]    0869: 3C 7B                                 		cmp al,7bh
+[ 730]    086B: 74 35                                 		jz pressac_alarm
+[ 731]    086D: 3C 77                                 		cmp al,77h
+[ 732]    086F: 74 3C                                 		jz press_enter_alarm
+[ 733]    0871: 88 04                                 		mov [si],al		
+[ 734]    0873: E8 44 FF                              		CALL asterisk
+[ 735]    0876: 46                                    		inc si	
+[ 736]    0877: 49                                    		dec cx
+[ 737]    0878: 75 DC                                 		jnz enter_14bit		
+[ 738]    087A:                                       disp_enteralarm:
+[ 739]    087A: E8 6A FF                              		call keypad_input
+[ 740]    087D: 3C 7E                                 		cmp al,7eh
+[ 741]    087F: 74 1A                                 		jz pressc_alarm
+[ 742]    0881: 3C 7B                                 		cmp al,7bh
+[ 743]    0883: 74 1D                                 		jz pressac_alarm
+[ 744]    0885: 3C 77                                 		cmp al,77h
+[ 745]    0887: 74 24                                 		jz press_enter_alarm
+[ 746]    0889: E8 41 FF                              asd2:		CALL clear_LCD
+[ 747]    088C: E8 1E FD                              		CALL enter_LCD	
+[ 748]    088F: E8 55 FF                              		call keypad_input
+[ 749]    0892: 3C 77                                 		cmp al,77h
+[ 750]    0894: 74 17                                 		jz press_enter_alarm
+[ 751]    0896: 75 F1                                 		jnz asd2	
+[ 752]    0898: 90                                    nop_alarm: nop
+[ 753]    0899: EB BB                                 	  jmp enter_14bit		
+[ 754]    089B:                                       pressc_alarm:
+[ 755]    089B: E8 37 03                              		call clear_1digit_LCD
+[ 756]    089E: 4E                                    		dec si
+[ 757]    089F: 41                                    		inc cx
+[ 758]    08A0: EB B4                                 		jmp enter_14bit
+[ 759]    08A2:                                       pressac_alarm:
+[ 760]    08A2: E8 28 FF                              		call clear_LCD
+[ 761]    08A5: B9 0E 00                              		mov cx,14
+[ 762]    08A8: BE 3A 00                              		mov si,3ah				;start of pass segment
+[ 763]    08AB: EB A9                                 		jmp enter_14bit
+[ 764]    08AD:                                       press_enter_alarm:
+[ 765]    08AD: E8 1D FF                              		CALL clear_LCD
+[ 766]    08B0: B0 0F                                 		mov al,0fh
+[ 767]    08B2: E6 08                                 		out port_a2,al
+[ 768]    08B4: 83 F9 00                              		cmp cx,0
+[ 769]    08B7: 74 02                                 		jz cmp_pass_alarm
+[ 770]    08B9: 75 18                                 		jnz x56
+[ 771]    08BB:                                       cmp_pass_alarm:
+[ 772]    08BB: FC                                    		cld
+[ 773]    08BC: BE 10 00                              		mov si,10h
+[ 774]    08BF: BF 3A 00                              		mov di,3ah
+[ 775]    08C2: B9 0E 00                              		mov cx,14
+[ 776]    08C5: F3 A6                                 		repe cmpsb
+[ 777]    08C7: 83 F9 00                              		cmp cx,00h
+[ 778]    08CA: 75 07                                 		jnz x56
+[ 779]    08CC: B0 FF                                 		mov al,0ffh
+[ 780]    08CE: E6 08                                 		out port_a2,al
+[ 781]    08D0: 80 C6 01                              		add dh,1h
+[ 782]    08D3:                                       x56:
+[ 783]    08D3: C3                                    ret		
+[ 784]        :                                       inta endp
+[ 785]        :                                       
+[ 786]        :                                       
+[ 787]        :                                       
+[ 788]    08D4:                                       intu proc
+[ 789]    08D4: E8 F6 FE                              		call clear_LCD
+[ 790]    08D7: B2 01                                 		mov dl,1 				;flag for checking two inputs		
+[ 791]    08D9: B0 FE                                 		mov al,0feh
+[ 792]    08DB: E6 08                                 	    	out port_a2,al
+[ 793]    08DD: B9 0C 00                              	   	mov cx,12
+[ 794]    08E0: BE 48 00                              	    	mov si,48h				;store the 12-bit entered pass after the hard coded pass word	
+[ 795]    08E3:                                       enter_12bitu:		
+[ 796]    08E3: E8 01 FF                              		call keypad_input
+[ 797]    08E6: 3C 7E                                 		cmp al,7eh
+[ 798]    08E8: 74 3E                                 		jz pressc_user
+[ 799]    08EA: 3C 7B                                 		cmp al,7bh
+[ 800]    08EC: 74 41                                 		jz pressac_user
+[ 801]    08EE: 3C BB                                 		cmp al,0bbh
+[ 802]    08F0: 74 33                                 		jz nop_user
+[ 803]    08F2: 3C B7                                 		cmp al,0b7h
+[ 804]    08F4: 74 2F                                 		jz nop_user
+[ 805]    08F6: 3C 7D                                 		cmp al,7dh
+[ 806]    08F8: 74 2B                                 		jz nop_user
+[ 807]    08FA: 3C 77                                 		cmp al,77h
+[ 808]    08FC: 74 3C                                 		jz press_enter_user
+[ 809]    08FE: 88 04                                 		mov [si],al		
+[ 810]    0900: E8 B7 FE                              		CALL asterisk
+[ 811]    0903: 46                                    		inc si	
+[ 812]    0904: 49                                    		dec cx
+[ 813]    0905: 75 DC                                 		jnz enter_12bitu	
+[ 814]    0907:                                       disp_enter_user:
+[ 815]    0907: E8 DD FE                              		call keypad_input
+[ 816]    090A: 3C 7E                                 		cmp al,7eh
+[ 817]    090C: 74 1A                                 		jz pressc_user
+[ 818]    090E: 3C 7B                                 		cmp al,7bh
+[ 819]    0910: 74 1D                                 		jz pressac_user
+[ 820]    0912: 3C 77                                 		cmp al,77h
+[ 821]    0914: 74 24                                 		jz press_enter_user
+[ 822]    0916: E8 B4 FE                              asd3:		CALL clear_LCD
+[ 823]    0919: E8 91 FC                              		CALL enter_LCD	
+[ 824]    091C: E8 C8 FE                              		call keypad_input
+[ 825]    091F: 3C 77                                 		cmp al,77h
+[ 826]    0921: 74 17                                 		jz press_enter_user
+[ 827]    0923: 75 F1                                 		jnz asd3		
+[ 828]    0925:                                       nop_user:
+[ 829]    0925: 90                                    			nop
+[ 830]    0926: EB BB                                 			jmp enter_12bitu		
+[ 831]    0928:                                       pressc_user:
+[ 832]    0928: E8 AA 02                              		call clear_1digit_LCD
+[ 833]    092B: 4E                                    		dec si
+[ 834]    092C: 41                                    		inc cx
+[ 835]    092D: EB B4                                 		jmp enter_12bitu
+[ 836]    092F:                                       pressac_user:
+[ 837]    092F: E8 9B FE                              		call clear_LCD
+[ 838]    0932: B9 0C 00                              		mov cx,12
+[ 839]    0935: BE 48 00                              		mov si,48h				;start of pass segment
+[ 840]    0938: EB A9                                 		jmp enter_12bitu
+[ 841]    093A:                                       press_enter_user:
+[ 842]    093A: B0 FF                                 		mov al,0ffh
+[ 843]    093C: E6 08                                 		out port_a2,al
+[ 844]    093E: 83 F9 00                              		cmp cx,0
+[ 845]    0941: 74 02                                 		jz cmp_pass_user
+[ 846]    0943: 90 90                                 		jnz wrong_pass
+[ 847]        :                                       		
+[ 848]    0945:                                       cmp_pass_user:
+[ 849]    0945: FC                                    		cld
+[ 850]    0946: BE 2E 00                              		mov si,2eh
+[ 851]    0949: BF 48 00                              		mov di,48h
+[ 852]    094C: B9 0C 00                              		mov cx,12
+[ 853]    094F: F3 A6                                 		repe cmpsb
+[ 854]    0951: 83 F9 00                              		cmp cx,00h
+[ 855]    0954: 90 90                                 		jnz wrong_pass
+[ 856]    0956: 74 31                                 		jz open_door_user
+[ 857]        :                                       		
+[ 858]    0958:                                       wrong_pass :
+[ 859]    0958: E8 72 FE                              		call clear_LCD
+[ 860]    095B: BE 48 00                              		mov si,48h
+[ 861]    095E: B9 0C 00                              		mov cx,12
+[ 862]    0961: 80 FA 00                              		cmp dl,0
+[ 863]    0964: 74 18                                 		jz raise_alarm_user
+[ 864]    0966: B0 FD                                 		mov al,0fdh
+[ 865]    0968: E6 08                                 		out port_a2,al
+[ 866]    096A: E8 CA 03                              		call retry_msg
+[ 867]    096D: E8 34 FC                              		call DELAY_max
+[ 868]    0970: E8 31 FC                              		call DELAY_max
+[ 869]    0973: E8 57 FE                              		call clear_LCD
+[ 870]    0976: B9 0C 00                              		mov cx,12
+[ 871]    0979: FE CA                                 		dec dl
+[ 872]    097B: E9 65 FF                              		jmp enter_12bitu
+[ 873]    097E:                                       raise_alarm_user:
+[ 874]    097E: B6 00                                 		mov dh,0
+[ 875]    0980: B0 0F                                 		mov al,0fh
+[ 876]    0982: E6 08                                 		out port_a2,al
+[ 877]    0984: B8 CD AB                              		mov ax,0abcdh
+[ 878]    0987: EB 03                                 		jmp end_70h	
+[ 879]    0989:                                       open_door_user:
+[ 880]    0989: E8 05 00                              		call open_door	
+[ 881]    098C:                                       end_70h:
+[ 882]    098C: C3                                    ret		
+[ 883]        :                                       intu endp
+[ 884]        :                                       
+[ 885]    098D:                                       ints proc	
+[ 886]        :                                       		
+[ 887]    098D: E8 01 00                              		call open_door
+[ 888]        :                                       		
+[ 889]        :                                       		; CALL DELAY_0.04s
+[ 890]        :                                       		; mov al,00h
+[ 891]        :                                       		; out port_c2, al	
+[ 892]    0990: C3                                    ret
+[ 893]        :                                       ints endp
+[ 894]        :                                       
+[ 895]    0991:                                       open_door proc
+[ 896]    0991: E8 39 FE                              	call clear_LCD
+[ 897]    0994: B0 8A                                 	mov al,8ah
+[ 898]    0996: E6 0A                                 	out port_b2,al
+[ 899]        :                                       	
+[ 900]    0998: E8 F7 FB                              	call DELAY_20ms
+[ 901]        :                                       	
+[ 902]    099B: B0 0A                                 	mov al,0ah
+[ 903]    099D: E6 0A                                 	out port_b2,al
+[ 904]        :                                       	
+[ 905]    099F: E4 0C                                 x31:		in al, port_c2
+[ 906]    09A1: 3C FF                                 		cmp al,0ffh
+[ 907]    09A3: 75 FA                                 		jnz x31
+[ 908]    09A5: E8 EA FB                              		call DELAY_20ms
+[ 909]    09A8: E8 01 00                              		call close_door		
+[ 910]    09AB: C3                                    ret
+[ 911]        :                                       open_door endp
+[ 912]        :                                       
+[ 913]    09AC:                                       close_door proc
+[ 914]    09AC: B0 03                                 	mov al,03h
+[ 915]    09AE: E6 0A                                 	out port_b2,al
+[ 916]    09B0: E8 F1 FB                              	call DELAY_max
+[ 917]    09B3: E8 EE FB                              	call DELAY_max
+[ 918]    09B6: E8 EB FB                              	call DELAY_max
+[ 919]    09B9: E8 E8 FB                              	call DELAY_max
+[ 920]    09BC: E8 E5 FB                              	call DELAY_max
+[ 921]    09BF: E8 E2 FB                              	call DELAY_max
+[ 922]    09C2: E8 DF FB                              	call DELAY_max
+[ 923]    09C5: E8 DC FB                              	call DELAY_max
+[ 924]    09C8: E8 D9 FB                              	call DELAY_max
+[ 925]    09CB: E8 D6 FB                              	call DELAY_max
+[ 926]    09CE: E8 D3 FB                              	call DELAY_max
+[ 927]    09D1: E8 D0 FB                              	call DELAY_max
+[ 928]    09D4: E8 CD FB                              	call DELAY_max
+[ 929]    09D7: E8 CA FB                              	call DELAY_max
+[ 930]    09DA: E8 C7 FB                              	call DELAY_max
+[ 931]    09DD: E8 C4 FB                              	call DELAY_max
+[ 932]    09E0: E8 C1 FB                              	call DELAY_max
+[ 933]    09E3: E8 BE FB                              	call DELAY_max
+[ 934]    09E6: E8 BB FB                              	call DELAY_max
+[ 935]    09E9: E8 B8 FB                              	call DELAY_max
+[ 936]        :                                       
+[ 937]        :                                       	
+[ 938]    09EC: C3                                    ret
+[ 939]        :                                       close_door endp			
+[ 940]        :                                       	
+[ 941]        :                                       	
+[ 942]    09ED:                                       welcome_msg proc
+[ 943]    09ED: B0 A0                                 	mov al,0A0h
+[ 944]    09EF: E6 00                                 	out port_a1,al
+[ 945]    09F1: E8 9E FB                              	call DELAY_20ms
+[ 946]    09F4: B0 05                                 	mov al,05h
+[ 947]    09F6: E6 02                                 	out port_b1,al
+[ 948]    09F8: E8 97 FB                              	call DELAY_20ms
+[ 949]    09FB: B0 01                                 	mov al,01h
+[ 950]    09FD: E6 02                                 	out port_b1,al  ;prints Space
+[ 951]        :                                       	
+[ 952]    09FF: B0 A0                                 	mov al,0A0h
+[ 953]    0A01: E6 00                                 	out port_a1,al
+[ 954]    0A03: E8 8C FB                              	call DELAY_20ms
+[ 955]    0A06: B0 05                                 	mov al,05h
+[ 956]    0A08: E6 02                                 	out port_b1,al
+[ 957]    0A0A: E8 85 FB                              	call DELAY_20ms
+[ 958]    0A0D: B0 01                                 	mov al,01h
+[ 959]    0A0F: E6 02                                 	out port_b1,al  ;prints Space
+[ 960]        :                                       	
+[ 961]    0A11: B0 A0                                 	mov al,0A0h
+[ 962]    0A13: E6 00                                 	out port_a1,al
+[ 963]    0A15: E8 7A FB                              	call DELAY_20ms
+[ 964]    0A18: B0 05                                 	mov al,05h
+[ 965]    0A1A: E6 02                                 	out port_b1,al
+[ 966]    0A1C: E8 73 FB                              	call DELAY_20ms
+[ 967]    0A1F: B0 01                                 	mov al,01h
+[ 968]    0A21: E6 02                                 	out port_b1,al  ;prints Space
+[ 969]        :                                       	
+[ 970]    0A23: B0 A0                                 	mov al,0A0h
+[ 971]    0A25: E6 00                                 	out port_a1,al
+[ 972]    0A27: E8 68 FB                              	call DELAY_20ms
+[ 973]    0A2A: B0 05                                 	mov al,05h
+[ 974]    0A2C: E6 02                                 	out port_b1,al
+[ 975]    0A2E: E8 61 FB                              	call DELAY_20ms
+[ 976]    0A31: B0 01                                 	mov al,01h
+[ 977]    0A33: E6 02                                 	out port_b1,al  ;prints Space
+[ 978]        :                                       	
+[ 979]    0A35: B0 A0                                 	mov al,0A0h
+[ 980]    0A37: E6 00                                 	out port_a1,al
+[ 981]    0A39: E8 56 FB                              	call DELAY_20ms
+[ 982]    0A3C: B0 05                                 	mov al,05h
+[ 983]    0A3E: E6 02                                 	out port_b1,al
+[ 984]    0A40: E8 4F FB                              	call DELAY_20ms
+[ 985]    0A43: B0 01                                 	mov al,01h
+[ 986]    0A45: E6 02                                 	out port_b1,al  ;prints Space
+[ 987]        :                                       	
+[ 988]    0A47: B0 57                                 	mov al,57h
+[ 989]    0A49: E6 00                                 	out port_a1,al
+[ 990]    0A4B: E8 44 FB                              	call DELAY_20ms
+[ 991]    0A4E: B0 05                                 	mov al,05h
+[ 992]    0A50: E6 02                                 	out port_b1,al
+[ 993]    0A52: E8 3D FB                              	call DELAY_20ms
+[ 994]    0A55: B0 01                                 	mov al,01h
+[ 995]    0A57: E6 02                                 	out port_b1,al  ;prints W
+[ 996]        :                                       	
+[ 997]    0A59: B0 45                                 	mov al,45h
+[ 998]    0A5B: E6 00                                 	out port_a1,al
+[ 999]    0A5D: E8 32 FB                              	call DELAY_20ms
+[1000]    0A60: B0 05                                 	mov al,05h
+[1001]    0A62: E6 02                                 	out port_b1,al
+[1002]    0A64: E8 2B FB                              	call DELAY_20ms
+[1003]    0A67: B0 01                                 	mov al,01h
+[1004]    0A69: E6 02                                 	out port_b1,al  ;prints E
+[1005]        :                                       	
+[1006]    0A6B: B0 4C                                 	mov al,4Ch
+[1007]    0A6D: E6 00                                 	out port_a1,al
+[1008]    0A6F: E8 20 FB                              	call DELAY_20ms
+[1009]    0A72: B0 05                                 	mov al,05h
+[1010]    0A74: E6 02                                 	out port_b1,al
+[1011]    0A76: E8 19 FB                              	call DELAY_20ms
+[1012]    0A79: B0 01                                 	mov al,01h
+[1013]    0A7B: E6 02                                 	out port_b1,al  ;prints L
+[1014]        :                                       		
+[1015]    0A7D: B0 43                                 	mov al,43h
+[1016]    0A7F: E6 00                                 	out port_a1,al
+[1017]    0A81: E8 0E FB                              	call DELAY_20ms
+[1018]    0A84: B0 05                                 	mov al,05h
+[1019]    0A86: E6 02                                 	out port_b1,al
+[1020]    0A88: E8 07 FB                              	call DELAY_20ms
+[1021]    0A8B: B0 01                                 	mov al,01h
+[1022]    0A8D: E6 02                                 	out port_b1,al  ;prints C
+[1023]        :                                       	
+[1024]    0A8F: B0 4F                                 	mov al,4Fh
+[1025]    0A91: E6 00                                 	out port_a1,al
+[1026]    0A93: E8 FC FA                              	call DELAY_20ms
+[1027]    0A96: B0 05                                 	mov al,05h
+[1028]    0A98: E6 02                                 	out port_b1,al
+[1029]    0A9A: E8 F5 FA                              	call DELAY_20ms
+[1030]    0A9D: B0 01                                 	mov al,01h
+[1031]    0A9F: E6 02                                 	out port_b1,al  ;prints O
+[1032]        :                                       	
+[1033]    0AA1: B0 4D                                 	mov al,4dh
+[1034]    0AA3: E6 00                                 	out port_a1,al
+[1035]    0AA5: E8 EA FA                              	call DELAY_20ms
+[1036]    0AA8: B0 05                                 	mov al,05h
+[1037]    0AAA: E6 02                                 	out port_b1,al
+[1038]    0AAC: E8 E3 FA                              	call DELAY_20ms
+[1039]    0AAF: B0 01                                 	mov al,01h
+[1040]    0AB1: E6 02                                 	out port_b1,al  ;prints M
+[1041]        :                                       	
+[1042]    0AB3: B0 45                                 	mov al,45h
+[1043]    0AB5: E6 00                                 	out port_a1,al
+[1044]    0AB7: E8 D8 FA                              	call DELAY_20ms
+[1045]    0ABA: B0 05                                 	mov al,05h
+[1046]    0ABC: E6 02                                 	out port_b1,al
+[1047]    0ABE: E8 D1 FA                              	call DELAY_20ms
+[1048]    0AC1: B0 01                                 	mov al,01h
+[1049]    0AC3: E6 02                                 	out port_b1,al  ;prints E
+[1050]        :                                       
+[1051]    0AC5: C3                                    ret
+[1052]        :                                       welcome_msg endp
+[1053]        :                                       
+[1054]    0AC6:                                       update_msg proc	
+[1055]    0AC6: B0 55                                 	mov al,55h
+[1056]    0AC8: E6 00                                 	out port_a1,al
+[1057]    0ACA: E8 C5 FA                              	call DELAY_20ms
+[1058]    0ACD: B0 05                                 	mov al,05h
+[1059]    0ACF: E6 02                                 	out port_b1,al
+[1060]    0AD1: E8 BE FA                              	call DELAY_20ms
+[1061]    0AD4: B0 01                                 	mov al,01h
+[1062]    0AD6: E6 02                                 	out port_b1,al  ;prints U
+[1063]        :                                       	
+[1064]    0AD8: B0 50                                 	mov al,50h
+[1065]    0ADA: E6 00                                 	out port_a1,al
+[1066]    0ADC: E8 B3 FA                              	call DELAY_20ms
+[1067]    0ADF: B0 05                                 	mov al,05h
+[1068]    0AE1: E6 02                                 	out port_b1,al
+[1069]    0AE3: E8 AC FA                              	call DELAY_20ms
+[1070]    0AE6: B0 01                                 	mov al,01h
+[1071]    0AE8: E6 02                                 	out port_b1,al  ;prints P
+[1072]        :                                       	
+[1073]    0AEA: B0 44                                 	mov al,44h
+[1074]    0AEC: E6 00                                 	out port_a1,al
+[1075]    0AEE: E8 A1 FA                              	call DELAY_20ms
+[1076]    0AF1: B0 05                                 	mov al,05h
+[1077]    0AF3: E6 02                                 	out port_b1,al
+[1078]    0AF5: E8 9A FA                              	call DELAY_20ms
+[1079]    0AF8: B0 01                                 	mov al,01h
+[1080]    0AFA: E6 02                                 	out port_b1,al  ;prints D
+[1081]        :                                       		
+[1082]    0AFC: B0 41                                 	mov al,41h
+[1083]    0AFE: E6 00                                 	out port_a1,al
+[1084]    0B00: E8 8F FA                              	call DELAY_20ms
+[1085]    0B03: B0 05                                 	mov al,05h
+[1086]    0B05: E6 02                                 	out port_b1,al
+[1087]    0B07: E8 88 FA                              	call DELAY_20ms
+[1088]    0B0A: B0 01                                 	mov al,01h
+[1089]    0B0C: E6 02                                 	out port_b1,al  ;prints A
+[1090]        :                                       	
+[1091]    0B0E: B0 54                                 	mov al,54h
+[1092]    0B10: E6 00                                 	out port_a1,al
+[1093]    0B12: E8 7D FA                              	call DELAY_20ms
+[1094]    0B15: B0 05                                 	mov al,05h
+[1095]    0B17: E6 02                                 	out port_b1,al
+[1096]    0B19: E8 76 FA                              	call DELAY_20ms
+[1097]    0B1C: B0 01                                 	mov al,01h
+[1098]    0B1E: E6 02                                 	out port_b1,al  ;prints T
+[1099]        :                                       		
+[1100]    0B20: B0 45                                 	mov al,45h
+[1101]    0B22: E6 00                                 	out port_a1,al
+[1102]    0B24: E8 6B FA                              	call DELAY_20ms
+[1103]    0B27: B0 05                                 	mov al,05h
+[1104]    0B29: E6 02                                 	out port_b1,al
+[1105]    0B2B: E8 64 FA                              	call DELAY_20ms
+[1106]    0B2E: B0 01                                 	mov al,01h
+[1107]    0B30: E6 02                                 	out port_b1,al  ;prints E
+[1108]        :                                       	
+[1109]    0B32: B0 A0                                 	mov al,0A0h
+[1110]    0B34: E6 00                                 	out port_a1,al
+[1111]    0B36: E8 59 FA                              	call DELAY_20ms
+[1112]    0B39: B0 05                                 	mov al,05h
+[1113]    0B3B: E6 02                                 	out port_b1,al
+[1114]    0B3D: E8 52 FA                              	call DELAY_20ms
+[1115]    0B40: B0 01                                 	mov al,01h
+[1116]    0B42: E6 02                                 	out port_b1,al  ;prints Space
+[1117]        :                                       	
+[1118]    0B44: B0 50                                 	mov al,50h
+[1119]    0B46: E6 00                                 	out port_a1,al
+[1120]    0B48: E8 47 FA                              	call DELAY_20ms
+[1121]    0B4B: B0 05                                 	mov al,05h
+[1122]    0B4D: E6 02                                 	out port_b1,al
+[1123]    0B4F: E8 40 FA                              	call DELAY_20ms
+[1124]    0B52: B0 01                                 	mov al,01h
+[1125]    0B54: E6 02                                 	out port_b1,al  ;prints P
+[1126]        :                                       	
+[1127]    0B56: B0 41                                 	mov al,41h
+[1128]    0B58: E6 00                                 	out port_a1,al
+[1129]    0B5A: E8 35 FA                              	call DELAY_20ms
+[1130]    0B5D: B0 05                                 	mov al,05h
+[1131]    0B5F: E6 02                                 	out port_b1,al
+[1132]    0B61: E8 2E FA                              	call DELAY_20ms
+[1133]    0B64: B0 01                                 	mov al,01h
+[1134]    0B66: E6 02                                 	out port_b1,al  ;prints A
+[1135]        :                                       		
+[1136]    0B68: B0 53                                 	mov al,53h
+[1137]    0B6A: E6 00                                 	out port_a1,al
+[1138]    0B6C: E8 23 FA                              	call DELAY_20ms
+[1139]    0B6F: B0 05                                 	mov al,05h
+[1140]    0B71: E6 02                                 	out port_b1,al
+[1141]    0B73: E8 1C FA                              	call DELAY_20ms
+[1142]    0B76: B0 01                                 	mov al,01h
+[1143]    0B78: E6 02                                 	out port_b1,al  ;prints S
+[1144]        :                                       	
+[1145]    0B7A: B0 53                                 	mov al,53h
+[1146]    0B7C: E6 00                                 	out port_a1,al
+[1147]    0B7E: E8 11 FA                              	call DELAY_20ms
+[1148]    0B81: B0 05                                 	mov al,05h
+[1149]    0B83: E6 02                                 	out port_b1,al
+[1150]    0B85: E8 0A FA                              	call DELAY_20ms
+[1151]    0B88: B0 01                                 	mov al,01h
+[1152]    0B8A: E6 02                                 	out port_b1,al  ;prints S
+[1153]        :                                       	
+[1154]    0B8C: B0 57                                 	mov al,57h
+[1155]    0B8E: E6 00                                 	out port_a1,al
+[1156]    0B90: E8 FF F9                              	call DELAY_20ms
+[1157]    0B93: B0 05                                 	mov al,05h
+[1158]    0B95: E6 02                                 	out port_b1,al
+[1159]    0B97: E8 F8 F9                              	call DELAY_20ms
+[1160]    0B9A: B0 01                                 	mov al,01h
+[1161]    0B9C: E6 02                                 	out port_b1,al  ;prints W
+[1162]        :                                       	
+[1163]    0B9E: B0 4F                                 	mov al,4Fh
+[1164]    0BA0: E6 00                                 	out port_a1,al
+[1165]    0BA2: E8 ED F9                              	call DELAY_20ms
+[1166]    0BA5: B0 05                                 	mov al,05h
+[1167]    0BA7: E6 02                                 	out port_b1,al
+[1168]    0BA9: E8 E6 F9                              	call DELAY_20ms
+[1169]    0BAC: B0 01                                 	mov al,01h
+[1170]    0BAE: E6 02                                 	out port_b1,al  ;prints O
+[1171]        :                                       	
+[1172]    0BB0: B0 52                                 	mov al,52h
+[1173]    0BB2: E6 00                                 	out port_a1,al
+[1174]    0BB4: E8 DB F9                              	call DELAY_20ms
+[1175]    0BB7: B0 05                                 	mov al,05h
+[1176]    0BB9: E6 02                                 	out port_b1,al
+[1177]    0BBB: E8 D4 F9                              	call DELAY_20ms
+[1178]    0BBE: B0 01                                 	mov al,01h
+[1179]    0BC0: E6 02                                 	out port_b1,al  ;prints R
+[1180]        :                                       	
+[1181]    0BC2: B0 44                                 	mov al,44h
+[1182]    0BC4: E6 00                                 	out port_a1,al
+[1183]    0BC6: E8 C9 F9                              	call DELAY_20ms
+[1184]    0BC9: B0 05                                 	mov al,05h
+[1185]    0BCB: E6 02                                 	out port_b1,al
+[1186]    0BCD: E8 C2 F9                              	call DELAY_20ms
+[1187]    0BD0: B0 01                                 	mov al,01h
+[1188]    0BD2: E6 02                                 	out port_b1,al  ;prints D
+[1189]        :                                       
+[1190]    0BD4: C3                                    ret
+[1191]        :                                       update_msg endp
+[1192]        :                                       
+[1193]    0BD5:                                       clear_1digit_LCD proc
+[1194]    0BD5: B0 00                                 	mov al,00h
+[1195]    0BD7: E6 02                                 	out port_b1,al
+[1196]    0BD9: E8 B6 F9                              	call DELAY_20ms
+[1197]    0BDC: B0 10                                 	mov al,10h			;shift left by 1
+[1198]    0BDE: E6 00                                 	out port_a1,al
+[1199]    0BE0: E8 AF F9                              	call DELAY_20ms
+[1200]    0BE3: B0 04                                 	mov al,04h
+[1201]    0BE5: E6 02                                 	out port_b1,al
+[1202]    0BE7: E8 A8 F9                              	call DELAY_20ms
+[1203]    0BEA: B0 00                                 	mov al,00h
+[1204]    0BEC: E6 02                                 	out port_b1,al
+[1205]        :                                       	
+[1206]    0BEE: B0 A0                                 	mov al,0A0h
+[1207]    0BF0: E6 00                                 	out port_a1,al
+[1208]    0BF2: E8 9D F9                              	call DELAY_20ms
+[1209]    0BF5: B0 05                                 	mov al,05h
+[1210]    0BF7: E6 02                                 	out port_b1,al
+[1211]    0BF9: E8 96 F9                              	call DELAY_20ms
+[1212]    0BFC: B0 01                                 	mov al,01h
+[1213]    0BFE: E6 02                                 	out port_b1,al 			;prints Space
+[1214]        :                                       	
+[1215]    0C00: E8 8F F9                              	call DELAY_20ms
+[1216]    0C03: B0 10                                 	mov al,10h			;shift left by 1
+[1217]    0C05: E6 00                                 	out port_a1,al
+[1218]    0C07: E8 88 F9                              	call DELAY_20ms
+[1219]    0C0A: B0 04                                 	mov al,04h
+[1220]    0C0C: E6 02                                 	out port_b1,al
+[1221]    0C0E: E8 81 F9                              	call DELAY_20ms
+[1222]    0C11: B0 00                                 	mov al,00h
+[1223]    0C13: E6 02                                 	out port_b1,al
+[1224]        :                                       	
+[1225]    0C15: C3                                    RET
+[1226]        :                                       clear_1digit_LCD endp	
+[1227]        :                                       
+[1228]    0C16:                                       error_msg proc
+[1229]    0C16: B0 A0                                 	mov al,0A0h
+[1230]    0C18: E6 00                                 	out port_a1,al
+[1231]    0C1A: E8 75 F9                              	call DELAY_20ms
+[1232]    0C1D: B0 05                                 	mov al,05h
+[1233]    0C1F: E6 02                                 	out port_b1,al
+[1234]    0C21: E8 6E F9                              	call DELAY_20ms
+[1235]    0C24: B0 01                                 	mov al,01h
+[1236]    0C26: E6 02                                 	out port_b1,al  ;prints Space
+[1237]        :                                       	
+[1238]    0C28: B0 45                                 	mov al,45h
+[1239]    0C2A: E6 00                                 	out port_a1,al
+[1240]    0C2C: E8 63 F9                              	call DELAY_20ms
+[1241]    0C2F: B0 05                                 	mov al,05h
+[1242]    0C31: E6 02                                 	out port_b1,al
+[1243]    0C33: E8 5C F9                              	call DELAY_20ms
+[1244]    0C36: B0 01                                 	mov al,01h
+[1245]    0C38: E6 02                                 	out port_b1,al  ;prints E
+[1246]        :                                       	
+[1247]    0C3A: B0 4E                                 	mov al,4Eh
+[1248]    0C3C: E6 00                                 	out port_a1,al
+[1249]    0C3E: E8 51 F9                              	call DELAY_20ms
+[1250]    0C41: B0 05                                 	mov al,05h
+[1251]    0C43: E6 02                                 	out port_b1,al
+[1252]    0C45: E8 4A F9                              	call DELAY_20ms
+[1253]    0C48: B0 01                                 	mov al,01h
+[1254]    0C4A: E6 02                                 	out port_b1,al  ;prints N
+[1255]        :                                       	
+[1256]    0C4C: B0 54                                 	mov al,54h
+[1257]    0C4E: E6 00                                 	out port_a1,al
+[1258]    0C50: E8 3F F9                              	call DELAY_20ms
+[1259]    0C53: B0 05                                 	mov al,05h
+[1260]    0C55: E6 02                                 	out port_b1,al
+[1261]    0C57: E8 38 F9                              	call DELAY_20ms
+[1262]    0C5A: B0 01                                 	mov al,01h
+[1263]    0C5C: E6 02                                 	out port_b1,al  ;prints T
+[1264]        :                                       	
+[1265]    0C5E: B0 45                                 	mov al,45h
+[1266]    0C60: E6 00                                 	out port_a1,al
+[1267]    0C62: E8 2D F9                              	call DELAY_20ms
+[1268]    0C65: B0 05                                 	mov al,05h
+[1269]    0C67: E6 02                                 	out port_b1,al
+[1270]    0C69: E8 26 F9                              	call DELAY_20ms
+[1271]    0C6C: B0 01                                 	mov al,01h
+[1272]    0C6E: E6 02                                 	out port_b1,al  ;prints E
+[1273]        :                                       	
+[1274]    0C70: B0 52                                 	mov al,52h
+[1275]    0C72: E6 00                                 	out port_a1,al
+[1276]    0C74: E8 1B F9                              	call DELAY_20ms
+[1277]    0C77: B0 05                                 	mov al,05h
+[1278]    0C79: E6 02                                 	out port_b1,al
+[1279]    0C7B: E8 14 F9                              	call DELAY_20ms
+[1280]    0C7E: B0 01                                 	mov al,01h
+[1281]    0C80: E6 02                                 	out port_b1,al  ;prints R
+[1282]        :                                       	
+[1283]    0C82: B0 A0                                 	mov al,0A0h
+[1284]    0C84: E6 00                                 	out port_a1,al
+[1285]    0C86: E8 09 F9                              	call DELAY_20ms
+[1286]    0C89: B0 05                                 	mov al,05h
+[1287]    0C8B: E6 02                                 	out port_b1,al
+[1288]    0C8D: E8 02 F9                              	call DELAY_20ms
+[1289]    0C90: B0 01                                 	mov al,01h
+[1290]    0C92: E6 02                                 	out port_b1,al  ;prints Space
+[1291]        :                                       	
+[1292]    0C94: B0 31                                 	mov al,31h
+[1293]    0C96: E6 00                                 	out port_a1,al
+[1294]    0C98: E8 F7 F8                              	call DELAY_20ms
+[1295]    0C9B: B0 05                                 	mov al,05h
+[1296]    0C9D: E6 02                                 	out port_b1,al
+[1297]    0C9F: E8 F0 F8                              	call DELAY_20ms
+[1298]    0CA2: B0 01                                 	mov al,01h
+[1299]    0CA4: E6 02                                 	out port_b1,al  ;prints 1
+[1300]        :                                       	
+[1301]    0CA6: B0 32                                 	mov al,32h
+[1302]    0CA8: E6 00                                 	out port_a1,al
+[1303]    0CAA: E8 E5 F8                              	call DELAY_20ms
+[1304]    0CAD: B0 05                                 	mov al,05h
+[1305]    0CAF: E6 02                                 	out port_b1,al
+[1306]    0CB1: E8 DE F8                              	call DELAY_20ms
+[1307]    0CB4: B0 01                                 	mov al,01h
+[1308]    0CB6: E6 02                                 	out port_b1,al  ;prints 2
+[1309]        :                                       	
+[1310]    0CB8: B0 A0                                 	mov al,0A0h
+[1311]    0CBA: E6 00                                 	out port_a1,al
+[1312]    0CBC: E8 D3 F8                              	call DELAY_20ms
+[1313]    0CBF: B0 05                                 	mov al,05h
+[1314]    0CC1: E6 02                                 	out port_b1,al
+[1315]    0CC3: E8 CC F8                              	call DELAY_20ms
+[1316]    0CC6: B0 01                                 	mov al,01h
+[1317]    0CC8: E6 02                                 	out port_b1,al  ;prints Space
+[1318]        :                                       	
+[1319]    0CCA: B0 44                                 	mov al,44h
+[1320]    0CCC: E6 00                                 	out port_a1,al
+[1321]    0CCE: E8 C1 F8                              	call DELAY_20ms
+[1322]    0CD1: B0 05                                 	mov al,05h
+[1323]    0CD3: E6 02                                 	out port_b1,al
+[1324]    0CD5: E8 BA F8                              	call DELAY_20ms
+[1325]    0CD8: B0 01                                 	mov al,01h
+[1326]    0CDA: E6 02                                 	out port_b1,al  ;prints D
+[1327]        :                                       	
+[1328]    0CDC: B0 49                                 	mov al,49h
+[1329]    0CDE: E6 00                                 	out port_a1,al
+[1330]    0CE0: E8 AF F8                              	call DELAY_20ms
+[1331]    0CE3: B0 05                                 	mov al,05h
+[1332]    0CE5: E6 02                                 	out port_b1,al
+[1333]    0CE7: E8 A8 F8                              	call DELAY_20ms
+[1334]    0CEA: B0 01                                 	mov al,01h
+[1335]    0CEC: E6 02                                 	out port_b1,al  ;prints I
+[1336]        :                                       	
+[1337]    0CEE: B0 47                                 	mov al,47h
+[1338]    0CF0: E6 00                                 	out port_a1,al
+[1339]    0CF2: E8 9D F8                              	call DELAY_20ms
+[1340]    0CF5: B0 05                                 	mov al,05h
+[1341]    0CF7: E6 02                                 	out port_b1,al
+[1342]    0CF9: E8 96 F8                              	call DELAY_20ms
+[1343]    0CFC: B0 01                                 	mov al,01h
+[1344]    0CFE: E6 02                                 	out port_b1,al  ;prints G
+[1345]        :                                       	
+[1346]    0D00: B0 49                                 	mov al,49h
+[1347]    0D02: E6 00                                 	out port_a1,al
+[1348]    0D04: E8 8B F8                              	call DELAY_20ms
+[1349]    0D07: B0 05                                 	mov al,05h
+[1350]    0D09: E6 02                                 	out port_b1,al
+[1351]    0D0B: E8 84 F8                              	call DELAY_20ms
+[1352]    0D0E: B0 01                                 	mov al,01h
+[1353]    0D10: E6 02                                 	out port_b1,al  ;prints I
+[1354]        :                                       	
+[1355]    0D12: B0 54                                 	mov al,54h
+[1356]    0D14: E6 00                                 	out port_a1,al
+[1357]    0D16: E8 79 F8                              	call DELAY_20ms
+[1358]    0D19: B0 05                                 	mov al,05h
+[1359]    0D1B: E6 02                                 	out port_b1,al
+[1360]    0D1D: E8 72 F8                              	call DELAY_20ms
+[1361]    0D20: B0 01                                 	mov al,01h
+[1362]    0D22: E6 02                                 	out port_b1,al  ;prints T
+[1363]        :                                       	
+[1364]    0D24: B0 53                                 	mov al,53h
+[1365]    0D26: E6 00                                 	out port_a1,al
+[1366]    0D28: E8 67 F8                              	call DELAY_20ms
+[1367]    0D2B: B0 05                                 	mov al,05h
+[1368]    0D2D: E6 02                                 	out port_b1,al
+[1369]    0D2F: E8 60 F8                              	call DELAY_20ms
+[1370]    0D32: B0 01                                 	mov al,01h
+[1371]    0D34: E6 02                                 	out port_b1,al  ;prints S
+[1372]    0D36: C3                                    RET
+[1373]        :                                       error_msg endp
+[1374]        :                                       
+[1375]    0D37:                                       retry_msg proc
+[1376]    0D37: B0 A0                                 	mov al,0A0h
+[1377]    0D39: E6 00                                 	out port_a1,al
+[1378]    0D3B: E8 54 F8                              	call DELAY_20ms
+[1379]    0D3E: B0 05                                 	mov al,05h
+[1380]    0D40: E6 02                                 	out port_b1,al
+[1381]    0D42: E8 4D F8                              	call DELAY_20ms
+[1382]    0D45: B0 01                                 	mov al,01h
+[1383]    0D47: E6 02                                 	out port_b1,al  ;prints Space
+[1384]        :                                       	
+[1385]    0D49: B0 A0                                 	mov al,0A0h
+[1386]    0D4B: E6 00                                 	out port_a1,al
+[1387]    0D4D: E8 42 F8                              	call DELAY_20ms
+[1388]    0D50: B0 05                                 	mov al,05h
+[1389]    0D52: E6 02                                 	out port_b1,al
+[1390]    0D54: E8 3B F8                              	call DELAY_20ms
+[1391]    0D57: B0 01                                 	mov al,01h
+[1392]    0D59: E6 02                                 	out port_b1,al  ;prints Space
+[1393]        :                                       	
+[1394]    0D5B: B0 A0                                 	mov al,0A0h
+[1395]    0D5D: E6 00                                 	out port_a1,al
+[1396]    0D5F: E8 30 F8                              	call DELAY_20ms
+[1397]    0D62: B0 05                                 	mov al,05h
+[1398]    0D64: E6 02                                 	out port_b1,al
+[1399]    0D66: E8 29 F8                              	call DELAY_20ms
+[1400]    0D69: B0 01                                 	mov al,01h
+[1401]    0D6B: E6 02                                 	out port_b1,al  ;prints Space
+[1402]        :                                       	
+[1403]    0D6D: B0 A0                                 	mov al,0A0h
+[1404]    0D6F: E6 00                                 	out port_a1,al
+[1405]    0D71: E8 1E F8                              	call DELAY_20ms
+[1406]    0D74: B0 05                                 	mov al,05h
+[1407]    0D76: E6 02                                 	out port_b1,al
+[1408]    0D78: E8 17 F8                              	call DELAY_20ms
+[1409]    0D7B: B0 01                                 	mov al,01h
+[1410]    0D7D: E6 02                                 	out port_b1,al  ;prints Space
+[1411]        :                                       	
+[1412]    0D7F: B0 52                                 	mov al,52h
+[1413]    0D81: E6 00                                 	out port_a1,al
+[1414]    0D83: E8 0C F8                              	call DELAY_20ms
+[1415]    0D86: B0 05                                 	mov al,05h
+[1416]    0D88: E6 02                                 	out port_b1,al
+[1417]    0D8A: E8 05 F8                              	call DELAY_20ms
+[1418]    0D8D: B0 01                                 	mov al,01h
+[1419]    0D8F: E6 02                                 	out port_b1,al  ;prints R
+[1420]        :                                       	
+[1421]    0D91: B0 45                                 	mov al,45h
+[1422]    0D93: E6 00                                 	out port_a1,al
+[1423]    0D95: E8 FA F7                              	call DELAY_20ms
+[1424]    0D98: B0 05                                 	mov al,05h
+[1425]    0D9A: E6 02                                 	out port_b1,al
+[1426]    0D9C: E8 F3 F7                              	call DELAY_20ms
+[1427]    0D9F: B0 01                                 	mov al,01h
+[1428]    0DA1: E6 02                                 	out port_b1,al  ;prints E
+[1429]        :                                       	
+[1430]    0DA3: B0 54                                 	mov al,54h
+[1431]    0DA5: E6 00                                 	out port_a1,al
+[1432]    0DA7: E8 E8 F7                              	call DELAY_20ms
+[1433]    0DAA: B0 05                                 	mov al,05h
+[1434]    0DAC: E6 02                                 	out port_b1,al
+[1435]    0DAE: E8 E1 F7                              	call DELAY_20ms
+[1436]    0DB1: B0 01                                 	mov al,01h
+[1437]    0DB3: E6 02                                 	out port_b1,al  ;prints T
+[1438]        :                                       	
+[1439]    0DB5: B0 52                                 	mov al,52h
+[1440]    0DB7: E6 00                                 	out port_a1,al
+[1441]    0DB9: E8 D6 F7                              	call DELAY_20ms
+[1442]    0DBC: B0 05                                 	mov al,05h
+[1443]    0DBE: E6 02                                 	out port_b1,al
+[1444]    0DC0: E8 CF F7                              	call DELAY_20ms
+[1445]    0DC3: B0 01                                 	mov al,01h
+[1446]    0DC5: E6 02                                 	out port_b1,al  ;prints R
+[1447]        :                                       	
+[1448]    0DC7: B0 59                                 	mov al,59h
+[1449]    0DC9: E6 00                                 	out port_a1,al
+[1450]    0DCB: E8 C4 F7                              	call DELAY_20ms
+[1451]    0DCE: B0 05                                 	mov al,05h
+[1452]    0DD0: E6 02                                 	out port_b1,al
+[1453]    0DD2: E8 BD F7                              	call DELAY_20ms
+[1454]    0DD5: B0 01                                 	mov al,01h
+[1455]    0DD7: E6 02                                 	out port_b1,al  ;prints Y
+[1456]        :                                       
+[1457]    0DD9: C3                                    ret
+[1458]        :                                       retry_msg endp	
+[1459]        :                                       
+[1460]        :                                       
+[1461]    0DDA:                                       updateday_msg proc
+[1462]    0DDA: B0 55                                 	mov al,55h
+[1463]    0DDC: E6 00                                 	out port_a1,al
+[1464]    0DDE: E8 B1 F7                              	call DELAY_20ms
+[1465]    0DE1: B0 05                                 	mov al,05h
+[1466]    0DE3: E6 02                                 	out port_b1,al
+[1467]    0DE5: E8 AA F7                              	call DELAY_20ms
+[1468]    0DE8: B0 01                                 	mov al,01h
+[1469]    0DEA: E6 02                                 	out port_b1,al  ;prints U
+[1470]        :                                       	
+[1471]    0DEC: B0 50                                 	mov al,50h
+[1472]    0DEE: E6 00                                 	out port_a1,al
+[1473]    0DF0: E8 9F F7                              	call DELAY_20ms
+[1474]    0DF3: B0 05                                 	mov al,05h
+[1475]    0DF5: E6 02                                 	out port_b1,al
+[1476]    0DF7: E8 98 F7                              	call DELAY_20ms
+[1477]    0DFA: B0 01                                 	mov al,01h
+[1478]    0DFC: E6 02                                 	out port_b1,al  ;prints P
+[1479]        :                                       	
+[1480]    0DFE: B0 44                                 	mov al,44h
+[1481]    0E00: E6 00                                 	out port_a1,al
+[1482]    0E02: E8 8D F7                              	call DELAY_20ms
+[1483]    0E05: B0 05                                 	mov al,05h
+[1484]    0E07: E6 02                                 	out port_b1,al
+[1485]    0E09: E8 86 F7                              	call DELAY_20ms
+[1486]    0E0C: B0 01                                 	mov al,01h
+[1487]    0E0E: E6 02                                 	out port_b1,al  ;prints D
+[1488]        :                                       	
+[1489]    0E10: B0 41                                 	mov al,41h
+[1490]    0E12: E6 00                                 	out port_a1,al
+[1491]    0E14: E8 7B F7                              	call DELAY_20ms
+[1492]    0E17: B0 05                                 	mov al,05h
+[1493]    0E19: E6 02                                 	out port_b1,al
+[1494]    0E1B: E8 74 F7                              	call DELAY_20ms
+[1495]    0E1E: B0 01                                 	mov al,01h
+[1496]    0E20: E6 02                                 	out port_b1,al  ;prints A
+[1497]        :                                       	
+[1498]    0E22: B0 54                                 	mov al,54h
+[1499]    0E24: E6 00                                 	out port_a1,al
+[1500]    0E26: E8 69 F7                              	call DELAY_20ms
+[1501]    0E29: B0 05                                 	mov al,05h
+[1502]    0E2B: E6 02                                 	out port_b1,al
+[1503]    0E2D: E8 62 F7                              	call DELAY_20ms
+[1504]    0E30: B0 01                                 	mov al,01h
+[1505]    0E32: E6 02                                 	out port_b1,al  ;prints T
+[1506]        :                                       	
+[1507]    0E34: B0 45                                 	mov al,45h
+[1508]    0E36: E6 00                                 	out port_a1,al
+[1509]    0E38: E8 57 F7                              	call DELAY_20ms
+[1510]    0E3B: B0 05                                 	mov al,05h
+[1511]    0E3D: E6 02                                 	out port_b1,al
+[1512]    0E3F: E8 50 F7                              	call DELAY_20ms
+[1513]    0E42: B0 01                                 	mov al,01h
+[1514]    0E44: E6 02                                 	out port_b1,al  ;prints E
+[1515]        :                                       	
+[1516]    0E46: B0 A0                                 	mov al,0a0h
+[1517]    0E48: E6 00                                 	out port_a1,al
+[1518]    0E4A: E8 45 F7                              	call DELAY_20ms
+[1519]    0E4D: B0 05                                 	mov al,05h
+[1520]    0E4F: E6 02                                 	out port_b1,al
+[1521]    0E51: E8 3E F7                              	call DELAY_20ms
+[1522]    0E54: B0 01                                 	mov al,01h
+[1523]    0E56: E6 02                                 	out port_b1,al  ;prints Space
+[1524]        :                                       	
+[1525]    0E58: B0 44                                 	mov al,44h
+[1526]    0E5A: E6 00                                 	out port_a1,al
+[1527]    0E5C: E8 33 F7                              	call DELAY_20ms
+[1528]    0E5F: B0 05                                 	mov al,05h
+[1529]    0E61: E6 02                                 	out port_b1,al
+[1530]    0E63: E8 2C F7                              	call DELAY_20ms
+[1531]    0E66: B0 01                                 	mov al,01h
+[1532]    0E68: E6 02                                 	out port_b1,al  ;prints D
+[1533]        :                                       	
+[1534]    0E6A: B0 41                                 	mov al,41h
+[1535]    0E6C: E6 00                                 	out port_a1,al
+[1536]    0E6E: E8 21 F7                              	call DELAY_20ms
+[1537]    0E71: B0 05                                 	mov al,05h
+[1538]    0E73: E6 02                                 	out port_b1,al
+[1539]    0E75: E8 1A F7                              	call DELAY_20ms
+[1540]    0E78: B0 01                                 	mov al,01h
+[1541]    0E7A: E6 02                                 	out port_b1,al  ;prints A
+[1542]        :                                       	
+[1543]    0E7C: B0 59                                 	mov al,59h
+[1544]    0E7E: E6 00                                 	out port_a1,al
+[1545]    0E80: E8 0F F7                              	call DELAY_20ms
+[1546]    0E83: B0 05                                 	mov al,05h
+[1547]    0E85: E6 02                                 	out port_b1,al
+[1548]    0E87: E8 08 F7                              	call DELAY_20ms
+[1549]    0E8A: B0 01                                 	mov al,01h
+[1550]    0E8C: E6 02                                 	out port_b1,al  ;prints Y
+[1551]        :                                       	
+[1552]    0E8E: B0 A0                                 	mov al,0a0h
+[1553]    0E90: E6 00                                 	out port_a1,al
+[1554]    0E92: E8 FD F6                              	call DELAY_20ms
+[1555]    0E95: B0 05                                 	mov al,05h
+[1556]    0E97: E6 02                                 	out port_b1,al
+[1557]    0E99: E8 F6 F6                              	call DELAY_20ms
+[1558]    0E9C: B0 01                                 	mov al,01h
+[1559]    0E9E: E6 02                                 	out port_b1,al  ;prints Space
+[1560]        :                                       	
+[1561]    0EA0: B0 50                                 	mov al,50h
+[1562]    0EA2: E6 00                                 	out port_a1,al
+[1563]    0EA4: E8 EB F6                              	call DELAY_20ms
+[1564]    0EA7: B0 05                                 	mov al,05h
+[1565]    0EA9: E6 02                                 	out port_b1,al
+[1566]    0EAB: E8 E4 F6                              	call DELAY_20ms
+[1567]    0EAE: B0 01                                 	mov al,01h
+[1568]    0EB0: E6 02                                 	out port_b1,al ;prints P
+[1569]        :                                       	
+[1570]    0EB2: B0 41                                 	mov al,41h
+[1571]    0EB4: E6 00                                 	out port_a1,al
+[1572]    0EB6: E8 D9 F6                              	call DELAY_20ms
+[1573]    0EB9: B0 05                                 	mov al,05h
+[1574]    0EBB: E6 02                                 	out port_b1,al
+[1575]    0EBD: E8 D2 F6                              	call DELAY_20ms
+[1576]    0EC0: B0 01                                 	mov al,01h
+[1577]    0EC2: E6 02                                 	out port_b1,al  ;prints A
+[1578]        :                                       	
+[1579]    0EC4: B0 53                                 	mov al,53h
+[1580]    0EC6: E6 00                                 	out port_a1,al
+[1581]    0EC8: E8 C7 F6                              	call DELAY_20ms
+[1582]    0ECB: B0 05                                 	mov al,05h
+[1583]    0ECD: E6 02                                 	out port_b1,al
+[1584]    0ECF: E8 C0 F6                              	call DELAY_20ms
+[1585]    0ED2: B0 01                                 	mov al,01h
+[1586]    0ED4: E6 02                                 	out port_b1,al  ;prints S
+[1587]        :                                       	
+[1588]    0ED6: B0 53                                 	mov al,53h
+[1589]    0ED8: E6 00                                 	out port_a1,al
+[1590]    0EDA: E8 B5 F6                              	call DELAY_20ms
+[1591]    0EDD: B0 05                                 	mov al,05h
+[1592]    0EDF: E6 02                                 	out port_b1,al
+[1593]    0EE1: E8 AE F6                              	call DELAY_20ms
+[1594]    0EE4: B0 01                                 	mov al,01h
+[1595]    0EE6: E6 02                                 	out port_b1,al  ;prints S
+[1596]    0EE8: C3                                    ret
+[1597]        :                                       updateday_msg endp	
+[1598]        :                                       	
+[1599]    0EE9:                                       Nmi_24hrtimer:
+[1600]    0EE9: E8 E1 F8                              				call clear_LCD
+[1601]    0EEC: E8 E6 FC                              				call clear_1digit_LCD
+[1602]    0EEF: E8 E8 FE                              		  		call updateday_msg
+[1603]    0EF2:                                       startnmi:	
+[1604]        :                                       
+[1605]    0EF2: E8 F2 F8                              		call keypad_input
+[1606]    0EF5: 3C BB                                 		cmp al,0bbh; Check for 'M'
+[1607]    0EF7: 75 03 E9 67 F6                        		jz master_Mode
+[1608]    0EFC: EB F4                                 		jmp startnmi
+[1609]        :                                       		
+[1610]    0EFE: CF                                    iret
+[1611]    0EFF:                                       Switch_intR:
+[1612]    0EFF: E8 8F FA                              	call open_door
+[1613]    0F02: FB                                    	sti
+[1614]    0F03: 81 FD CD AB                           	cmp bp,0abcdh
+[1615]    0F07: 75 03 E9 48 F6                        	jz x6
+[1616]    0F0C: 74 03 E9 31 F6                        	jnz start
+[1617]        :                                       
+[1618]        :                                       
+[1619]    0F11: F4                                    HLT           ; halt!
+[1620]        :                                       
+[1621]        :                                       
+[1622]        :                                       
+[1623]        :                                       
+ 
+===================================================================================================
+ 
+
+
+
+
+===================================================================================================
